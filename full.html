@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#102b33">
+<meta name="tc-quest-version" content="7-mobile-compat">
 <meta name="description" content="3分で遊べる、留学生のためのピクセルアクションRPG。モンスターを倒して自信のかけらを集めよう。">
 <meta property="og:title" content="QUEST FOR TOMORROW | 未来をひらく小さな冒険">
 <meta property="og:description" content="剣を手に取り、就活の不安に立ち向かえ。無料で遊べるミニRPG！">
@@ -75,8 +76,19 @@ function initialWorld(){
   cam={x:clamp(player.x-W/2,0,WORLD_W-W),y:clamp(player.y-345,0,WORLD_H-H)};
 }
 function mob(type,x,y,shard=-1){let p={slime:{hp:6,speed:39,dmg:1,r:14,exp:7},bat:{hp:5,speed:65,dmg:1,r:15,exp:9},wisp:{hp:8,speed:42,dmg:2,r:14,exp:12},boss:{hp:46,speed:40,dmg:2,r:30,exp:70}}[type];return {type,x,y,homeX:x,homeY:y,hp:p.hp,maxHP:p.hp,speed:p.speed,dmg:p.dmg,r:p.r,exp:p.exp,shard,hitFlash:0,cool:rnd(.1,.7),phase:rnd(0,TAU),active:true,stun:0,bumpX:0,bumpY:0,dead:false,charging:0,windup:0,orbit:0}}
-function load(){let count=0;Object.entries(files).forEach(([key,src])=>{let im=new Image();im.onload=()=>{images[key]=im;if(++count===Object.keys(files).length){ready=true;initialWorld();paint()}};im.onerror=()=>{console.warn('Asset failed',src);count++};im.src=(window.__tcEmbeddedAssets&&window.__tcEmbeddedAssets[src])||('assets/'+src)})}
-function begin(){runId++;if(!ready){message('少しお待ちください…');return;}initialWorld();playing=true;paused=false;ended=false;$('#cover').hidden=true;$('#end').hidden=true;$('#pause').hidden=true;last=performance.now();beep(700,.12,'triangle');analytic('start')}
+function load(){let count=0;Object.entries(files).forEach(([key,src])=>{
+ let im=new Image();im.onload=()=>{images[key]=im;
+  if(++count===Object.keys(files).length){ready=true;initialWorld();try{paint()}catch(error){showFatal(error)}}};
+ im.onerror=()=>{console.warn('Asset failed',src);count++;
+  if(count===Object.keys(files).length&&!ready){
+   const btn=document.getElementById('start');if(btn)btn.textContent='画像を読み込めませんでした';
+   showFatal(new Error('Game image load failure: '+src));
+  }};
+ im.src=(window.__tcEmbeddedAssets&&window.__tcEmbeddedAssets[src])||('assets/'+src)
+})}
+function begin(){runId++;if(!ready){message('少しお待ちください…');return;}initialWorld();playing=true;paused=false;ended=false;$('#cover').hidden=true;$('#end').hidden=true;$('#pause').hidden=true;last=performance.now();
+ try{paint()}catch(error){showFatal(error);return}
+ beep(700,.12,'triangle');analytic('start')}
 function finish(){if(ended)return;ended=true;paused=true;playing=false;beep(900,.22,'triangle',.07);setTimeout(()=>beep(1150,.25,'triangle'),170);setTimeout(()=>beep(1500,.3,'triangle'),370);$('#end').hidden=false;analytic('boss')}
 $('#start').addEventListener('click',begin);$('#again').addEventListener('click',()=>{analytic('restart');begin()});$('#register').addEventListener('click',()=>{analytic('cta');window.location.assign(REGISTER_URL)});
 $('#resume').addEventListener('click',()=>{paused=false;$('#pause').hidden=true;last=performance.now()});$('#restart').addEventListener('click',begin);
@@ -137,7 +149,14 @@ function image(name,x,y,sx=1,sy=1,frame=0,row=0,fw=0,fh=0){let im=images[name];i
 function txt(s,x,y,size=10,color='#d9f0d8',align='left',stroke=false){ctx.textAlign=align;ctx.textBaseline='middle';ctx.font=`900 ${size}px 'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif`;if(stroke){ctx.lineWidth=3;ctx.strokeStyle='#122e39';ctx.strokeText(s,x,y)}ctx.fillStyle=color;ctx.fillText(s,x,y)}
 function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))}
 function ring(x,y,r,color,width=2){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.stroke()}
-function pill(x,y,w,h,color){ctx.fillStyle=color;ctx.beginPath();ctx.roundRect(x,y,w,h,Math.min(8,h/2));ctx.fill()}
+function pill(x,y,w,h,color){
+ const rad=Math.max(0,Math.min(8,h/2,w/2));
+ ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(x+rad,y);ctx.lineTo(x+w-rad,y);
+ ctx.quadraticCurveTo(x+w,y,x+w,y+rad);ctx.lineTo(x+w,y+h-rad);
+ ctx.quadraticCurveTo(x+w,y+h,x+w-rad,y+h);ctx.lineTo(x+rad,y+h);
+ ctx.quadraticCurveTo(x,y+h,x,y+h-rad);ctx.lineTo(x,y+rad);
+ ctx.quadraticCurveTo(x,y,x+rad,y);ctx.closePath();ctx.fill();
+}
 function worldPos(x,y){return{x:x-cam.x,y:y-cam.y}}
 function glow(x,y,r,col){let grad=ctx.createRadialGradient(x,y,1,x,y,r);grad.addColorStop(0,col);grad.addColorStop(1,'#ffffff00');ctx.fillStyle=grad;ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fill()}
 function npcDraw(){const p=worldPos(npc.x,npc.y);if(p.y<-80||p.y>H+80)return;rect(p.x-9,p.y-23,18,22,'#b7a27f');rect(p.x-10,p.y-33,20,12,'#e6c9a0');rect(p.x-11,p.y-36,22,8,'#c7c1a7');rect(p.x-10,p.y-22,19,22,'#536b61');rect(p.x-8,p.y-3,5,6,'#3a4c55');rect(p.x+5,p.y-3,5,6,'#3a4c55');txt('!',p.x,p.y-50,17,'#ffe5a3','center',true);pill(p.x-26,p.y-65,52,13,'#163a40');txt('案内人',p.x,p.y-58,9,'#e3dfb2','center')}
@@ -211,7 +230,21 @@ function drawControls(){
  if(player.dashCooldown>0){ctx.globalAlpha=.38;ctx.fillStyle='#0b2533';ctx.beginPath();ctx.moveTo(279,602);ctx.arc(279,602,28,-Math.PI/2,-Math.PI/2+TAU*player.dashCooldown/1.55,false);ctx.closePath();ctx.fill();ctx.globalAlpha=1}
 }
 function paint(){ctx.setTransform(1,0,0,1,0,0);ctx.imageSmoothingEnabled=false;rect(0,0,W,H,'#102934');if(!ready){txt('LOADING...',160,300,22,'#ebd6a4','center');return}drawWorld();drawHUD();if(playing&&!paused)drawControls();}
-function loop(now){let dt=Math.min((now-last)/1000||0,.04);last=now;update(dt);paint();requestAnimationFrame(loop)}
+function showFatal(error){
+ console.error('TC QUEST draw error:',error);
+ let panel=document.getElementById('tc-fatal');
+ if(!panel){
+  panel=document.createElement('div');panel.id='tc-fatal';
+  panel.style.cssText='position:absolute;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:26px;background:#102c3b;color:#fff1d0;text-align:center;font:700 15px/1.8 system-ui,sans-serif;';
+  panel.innerHTML='<div style="font-size:44px">⚠️</div><b style="font-size:22px">ゲームを読み込めませんでした</b><div>ブラウザとの相性の問題が発生しました。<br>下の軽量版をお試しください。</div><a href="./lite.html?v=7" style="background:#f2cc89;color:#183448;border-radius:8px;padding:12px 20px;text-decoration:none">軽量版であそぶ ▶</a><a href="./" style="color:#a7d7c7">入口に戻る</a><small id="tc-fatal-detail" style="font-size:10px;color:#c1d3cc"></small>';
+  document.getElementById('shell').appendChild(panel);
+ }
+ const detail=document.getElementById('tc-fatal-detail');if(detail)detail.textContent=String(error&&error.message||error).slice(0,150);
+}
+function loop(now){let dt=Math.min((now-last)/1000||0,.04);last=now;
+ try{update(dt);paint()}catch(error){showFatal(error);return}
+ requestAnimationFrame(loop);
+}
 function xy(e){let box=canvas.getBoundingClientRect();return {x:(e.clientX-box.left)*W/box.width,y:(e.clientY-box.top)*H/box.height}}
 function press(e){if(e.cancelable)e.preventDefault();let p=xy(e);try{canvas.setPointerCapture(e.pointerId)}catch(_){}if(!playing||paused)return;
  if(p.y<126&&p.x<44){inventory();return}if(p.y<126&&p.x>266){soundOn=!soundOn;return}
@@ -228,6 +261,8 @@ window.addEventListener('keydown',e=>{if(['Space','ArrowUp','ArrowDown','ArrowLe
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing&&!paused){inventory()}});
 // For diagnostics while development: ?debug=1 unlocks deterministic checks. Disabled in normal gameplay.
 if(new URLSearchParams(location.search).has('debug'))window.__tcDebug={state:()=>({player:{...player},boss:{...boss},enemiesAlive:enemies.filter(e=>!e.dead).length,playing,ready,ended}),warp:(x,y)=>{player.x=x;player.y=y;cam.x=clamp(x-160,0,WORLD_W-W);cam.y=clamp(y-350,0,WORLD_H-H)},grant:()=>{player.sword=true;player.atk=20;player.shards=3;player.maxHP=99;player.hp=99;player.shield=true},killBoss:()=>{if(!boss.spawned)startBoss();boss.hp=0},interact};
+window.addEventListener('unhandledrejection',event=>{if(playing)showFatal(event.reason||'Unexpected error')});
+window.addEventListener('error',event=>{if(playing)showFatal(event.error||event.message||'Unexpected error')});
 load();requestAnimationFrame(loop);
 </script>
 </body>
