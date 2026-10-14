@@ -260,7 +260,7 @@ function load(){let count=0;Object.entries(files).forEach(([key,src])=>{
 function begin(){runId++;if(!ready){message('少しお待ちください…');return;}initialWorld();playing=true;paused=false;ended=false;$('#cover').hidden=true;$('#end').hidden=true;$('#pause').hidden=true;$('#recordsPanel').hidden=true;$('#recordsOpen').hidden=false;$('#endResults').hidden=true;progress.tries++;saveProgress();achievement('first');last=performance.now();
   try{paint()}catch(error){showFatal(error);return}
   beep(700,.12,'triangle');analytic('start')}
-function finish(){if(ended)return;ended=true;paused=true;playing=false;beep(900,.22,'triangle',.07);setTimeout(()=>beep(1150,.25,'triangle'),170);setTimeout(()=>beep(1500,.3,'triangle'),370);$('#end').hidden=false;$('#recordsOpen').hidden=true;progress.clears++;if(!progress.best||Math.floor(elapsed)<progress.best)progress.best=Math.max(1,Math.floor(elapsed));saveProgress();achievement('clear');const res=$('#endResults');res.hidden=false;res.textContent='⏱ '+formatClock(elapsed)+'  /  🏆 最速 '+formatClock(progress.best)+'  /  実績 '+ACHIEVEMENTS.filter(a=>progress.achievements[a[0]]).length+'/'+ACHIEVEMENTS.length;analytic('boss')}
+function finish(){if(ended)return;ended=true;paused=true;playing=false;beep(900,.22,'triangle',.07);setTimeout(()=>beep(1150,.25,'triangle'),170);setTimeout(()=>beep(1500,.3,'triangle'),370);$('#end').hidden=false;$('#recordsOpen').hidden=true;progress.clears++;if(!progress.best||Math.floor(elapsed)<progress.best)progress.best=Math.floor(elapsed);saveProgress();achievement('clear');const res=$('#endResults');res.hidden=false;res.textContent='⏱ '+formatClock(elapsed)+'  /  🏆 最速 '+formatClock(progress.best)+'  /  実績 '+ACHIEVEMENTS.filter(a=>progress.achievements[a[0]]).length+'/'+ACHIEVEMENTS.length;analytic('boss')}
 $('#start').addEventListener('click',begin);$('#again').addEventListener('click',()=>{analytic('restart');begin()});$('#register').addEventListener('click',()=>{analytic('cta');window.location.assign(REGISTER_URL)});
 $('#resume').addEventListener('click',()=>{paused=false;$('#pause').hidden=true;last=performance.now()});$('#restart').addEventListener('click',begin);
 function inventory(){if(!playing||ended||npcTalk||yoshida.mode==='walk'||yoshida.mode==='dialog')return;paused=!paused;$('#pause').hidden=!paused;$('#inventory').innerHTML=`<b style="color:#f9dda2">レベル ${player.level}</b> ・ ${player.coins} G<br>⚔ 武器：${player.phone?'TCパスポート（攻撃力10倍）':player.sword?'冒険者の剣':'木の棒'}<br>🛡 防具：${player.shield?'森の盾':'なし'}<br>✚ 回復ポーション：${player.potions}個<br>✦ 自信のカケラ：${player.shards}/3<br><br><small>PC：WASD 移動 / J 攻撃 / Shift 回避 / Q 回復 / E 拾う</small>`;if(paused)beep(440,.07,'sine')}
@@ -596,7 +596,16 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing&&!
 if(new URLSearchParams(location.search).has('debug'))window.__tcDebug={state:()=>({player:{...player},boss:{...boss},enemiesAlive:enemies.filter(e=>!e.dead).length,playing,ready,ended}),warp:(x,y)=>{player.x=x;player.y=y;cam.x=clamp(x-160,0,WORLD_W-W);cam.y=clamp(y-350,0,WORLD_H-H)},grant:()=>{player.sword=true;player.atk=20;player.shards=3;player.maxHP=99;player.hp=99;player.shield=true},killBoss:()=>{if(!boss.spawned)startBoss();boss.hp=0},rescue:()=>{if(!boss.spawned)startBoss();beginYoshida()},interact,careerNpcs:()=>townNpcs.map(n=>({id:n.id,talked:n.talked,x:n.x,y:n.y})),talk:n=>beginNpcDialogue(townNpcs.find(t=>t.id===n)),nextTalk:nextNpcDialogue};
 window.addEventListener('unhandledrejection',event=>{if(playing)showFatal(event.reason||'Unexpected error')});
 window.addEventListener('error',event=>{if(playing)showFatal(event.error||event.message||'Unexpected error')});
-
+if(new URLSearchParams(location.search).has('debug'))window.__v12Test={
+ state:()=>({player:{...player},boss:{...boss},phone:player.phone,ultimate,achievements:{...progress.achievements},best:progress.best,clears:progress.clears,quests:townNpcs.map(n=>({id:n.id,started:!!n.started,talked:n.talked})),hazards:hazards.length,shots:shots.length,pattern:bossPattern,mode:yoshida.mode}),
+ teleport:(x,y)=>{player.x=x;player.y=y;cam.x=clamp(x-W/2,0,WORLD_W-W);cam.y=clamp(y-346,0,WORLD_H-H)},
+ fight:()=>{player.shards=3;player.x=410;player.y=450;startBoss()},
+ rescue:()=>{if(!boss.spawned)startBoss();beginYoshida()},
+ equip:()=>{if(!boss.spawned)startBoss();equipTcPhone()},
+ charge:()=>{ultimate=100},burst:()=>useBurst(),
+ finish:()=>{if(!boss.spawned)startBoss();boss.hp=1;player.phone=true;useBurst();finish()},
+ goal:(k)=>{if(k==='kills')player.kills=2;else if(k==='shards')player.shards=3}
+};
 load();requestAnimationFrame(loop);
 </script>
 </body>
