@@ -65,3 +65,36 @@
 @media (max-height:460px){#menu h1{font-size:60px}#menu .kicker{font-size:10px}#menu .sub{margin-bottom:9px}#menu p{font-size:13px;margin-bottom:9px}.chips{margin-bottom:9px!important}#menu .fine{margin-top:6px}#objectives{top:52px}#minimap{top:53px;width:90px;height:90px}#pad{width:108px;height:108px;bottom:12px}#stick{width:50px;height:50px;top:29px;left:29px}#fire{width:70px;height:70px;bottom:17px}#reload{bottom:15px}#sprint{bottom:78px}#use{bottom:110px}#readout{bottom:7px;left:158px;transform:scale(.8);transform-origin:left bottom}}
 @media (pointer:coarse){#desktopHint{display:none}#readout{bottom:6px;left:190px;transform:scale(.8);transform-origin:left bottom}#objectives{max-width:230px}}
 @media (pointer:fine){#controls{display:none!important}}
+
+
+/* v0.1.1 — stable touch layout after rotating into landscape.
+   Thumb targets scale with the actual viewport height rather than a portrait pixel layout. */
+html,body{overscroll-behavior:none;height:100%;height:100dvh}
+#game{width:100vw;height:100dvh}
+#controls{overflow:hidden;touch-action:none}
+#pad,#lookArea,#controls .action{touch-action:none;user-select:none;-webkit-user-select:none}
+@media (pointer:coarse) and (orientation:landscape){
+ #pad{width:clamp(104px,28vh,140px);height:clamp(104px,28vh,140px);left:max(19px,env(safe-area-inset-left));bottom:max(16px,env(safe-area-inset-bottom))}
+ #stick{width:46%;height:46%;left:50%;top:50%;transform:translate(-50%,-50%) translate(var(--sx,0px),var(--sy,0px));will-change:transform}
+ #lookArea{left:43%;width:57%;top:8%;height:75%;z-index:1}
+ #controls .action{z-index:2;display:flex;align-items:center;justify-content:center}
+ #fire{width:clamp(68px,19vh,90px);height:clamp(68px,19vh,90px);right:max(20px,env(safe-area-inset-right));bottom:max(17px,env(safe-area-inset-bottom));font-size:18px}
+ #reload{width:clamp(43px,13vh,55px);height:clamp(43px,13vh,55px);right:max(124px,calc(env(safe-area-inset-right) + 103px));bottom:max(16px,env(safe-area-inset-bottom))}
+ #sprint{width:clamp(45px,14vh,58px);height:clamp(45px,14vh,58px);right:max(124px,calc(env(safe-area-inset-right) + 103px));bottom:max(83px,calc(env(safe-area-inset-bottom) + 65px))}
+ #use{width:clamp(52px,16vh,68px);height:clamp(52px,16vh,68px);right:max(20px,env(safe-area-inset-right));bottom:max(119px,calc(env(safe-area-inset-bottom) + 102px))}
+ #readout{bottom:5px;left:max(148px,calc(env(safe-area-inset-left) + 140px));transform:scale(.72);transform-origin:left bottom;gap:16px}
+ #minimap{top:57px;width:clamp(74px,23vh,102px);height:clamp(74px,23vh,102px);right:max(18px,env(safe-area-inset-right))}
+ #objectives{top:57px;max-width:212px}
+ #compass{top:13px;letter-spacing:3px;font-size:11px}
+ #interactHint{bottom:30%;font-size:12px}
+}
+@media (pointer:coarse) and (orientation:landscape) and (max-height:370px){
+ #menu h1{font-size:clamp(47px,15vh,60px);line-height:.88}
+ #menu p{font-size:12px;margin-bottom:7px}
+ #menu .fine{display:none}
+ #menu .chips{margin-bottom:7px}
+ #readout{transform:scale(.65)}
+ #minimap{width:77px;height:77px}
+ #objectives{max-width:170px}
+ #objective{font-size:13px}
+}
