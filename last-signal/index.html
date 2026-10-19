@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#08161c"><meta name="description" content="LAST SIGNAL: an original cinematic 3D extraction shooter. Play in your mobile browser.">
+<title>LAST SIGNAL — Extraction Zone</title><link rel="stylesheet" href="./style.css">
+</head><body>
+<canvas id="game" aria-label="3D gameplay"></canvas><div id="grain"></div>
+<div id="loading">INITIALIZING SIGNAL...</div>
+<section id="menu" style="display:none">
+<div class="kicker">INDEPENDENT EXTRACTION PROTOCOL // 01</div>
+<h1>LAST<br>SIGNAL</h1>
+<div class="sub">ENTER THE ZONE. RECOVER THE SIGNAL. GET OUT.</div>
+<p>Scavenge <b>two encrypted cores</b> from supply caches, evade hostile machines, and reach the northern extraction beacon before your signal fades.</p>
+<div class="chips"><span>SOLO EXTRACTION</span><span>3D COMBAT</span><span>ONE LIFE</span></div>
+<button id="startBtn" class="primary">DEPLOY →</button>
+<div class="fine" id="menuHelp">MOBILE: left stick move · swipe right to aim · FIRE / USE | DESKTOP: WASD · drag mouse · click fire · E interact</div>
+</section>
+<section id="hud">
+<div id="damageFlash"></div>
+<div class="top" id="branding"><div id="diamond"></div><div><strong>LAST SIGNAL</strong><small>SECTOR: ASHEN YARD / 04</small></div></div>
+<div class="top" id="timeBox">SIGNAL WINDOW<div id="timer">08:00</div></div>
+<div id="objectives"><div class="eyebrow">PRIMARY OBJECTIVE</div><div id="objective">RECOVER SIGNAL CORES</div><div id="resources">ENCRYPTED CORES: 0 / 2</div></div>
+<canvas id="minimap" width="180" height="180"></canvas>
+<div id="compass">N · NE · E · SE · S · SW · W · NW</div>
+<div id="crosshair"></div><div id="interactHint"></div><div id="message"></div>
+<div id="readout"><div id="hp">ARMOR INTEGRITY<div id="hpVal">100</div><div class="bar"><div id="hpFill"></div></div></div><div id="ammoBox">VX-19 / CARBINE<div id="ammo">30 <small>/ 120</small></div></div></div>
+<div id="desktopHint">WASD MOVE · SHIFT SPRINT · DRAG AIM · CLICK SHOOT · E INTERACT · R RELOAD</div>
+</section>
+<div id="controls"><div id="lookArea"></div><div id="pad"><div id="stick"></div></div><button class="action" id="fire">FIRE</button><button class="action" id="reload">RLD</button><button class="action" id="sprint">RUN</button><button class="action" id="use">USE</button></div>
+<section id="endScreen"><div class="kicker">MISSION REPORT</div><h2 id="endTitle">EXTRACTED</h2><p id="endDetail"></p><div id="endStats"></div><button class="primary" id="restartBtn">DEPLOY AGAIN →</button></section>
+<div id="orientation"><div class="rotate">↻</div><strong>ROTATE YOUR DEVICE</strong><div>Landscape mode is required for the best experience.</div></div>
+<script type="module" src="./game.js"></script>
+</body></html>
