@@ -250,11 +250,37 @@ function init3d(){
  [[-29,-22],[-9,18],[24,-3],[25,27],[-22,45]].forEach((a,i)=>cache(a[0],a[1],i));
  extraction();particles();resize();
 }
-function resize(){
- if(!renderer)return;camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
- renderer.setSize(innerWidth,innerHeight,false);
+function resetTouchState(){
+  stick.x=stick.y=0;stick.pointer=null;
+  look.pointer=null;
+  buttons.fire=buttons.sprint=false;
+  for(const id of ["fire","sprint"])$(id)?.classList.remove("pressed");
+  $("stick")?.style.setProperty("--sx","0px");
+  $("stick")?.style.setProperty("--sy","0px");
 }
-window.addEventListener("resize",resize);
+function resize(){
+ if(!renderer)return;
+ // Read rendered canvas size, not stale innerWidth values during phone rotation.
+ const rect=canvas.getBoundingClientRect();
+ const w=Math.max(1,Math.round(rect.width||innerWidth));
+ const h=Math.max(1,Math.round(rect.height||innerHeight));
+ camera.aspect=w/h;camera.updateProjectionMatrix();
+ renderer.setSize(w,h,false);
+}
+let rotationResize;
+function handleRotation(){
+ resetTouchState();
+ // Mobile browsers update the visual viewport asynchronously after rotating.
+ resize();
+ clearTimeout(rotationResize);
+ rotationResize=setTimeout(resize,170);
+ setTimeout(resize,480);
+}
+window.addEventListener("resize",()=>requestAnimationFrame(resize));
+window.addEventListener("orientationchange",handleRotation);
+window.visualViewport?.addEventListener("resize",()=>requestAnimationFrame(resize));
+window.screen?.orientation?.addEventListener?.("change",handleRotation);
+window.addEventListener("pageshow",resize);
 function collision(x,z){
  if(Math.abs(x)>55||Math.abs(z)>55)return true;
  for(const o of obstacles){
@@ -469,21 +495,30 @@ function bind(){
   look.x=e.clientX;look.y=e.clientY;
  });
  function padMove(e){
-   const r=$("pad").getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
-   const x=clamp((e.clientX-cx)/(r.width*.33),-1,1),y=clamp((cy-e.clientY)/(r.height*.33),-1,1);
-   const n=Math.max(1,Math.hypot(x,y));stick.x=x/n;stick.y=y/n;
-   $("stick").style.transform="translate("+(stick.x*34)+"px,"+(-stick.y*34)+"px)";
+   const pad=$("pad"), thumb=$("stick");
+   const r=pad.getBoundingClientRect();
+   const dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2;
+   const distance=Math.hypot(dx,dy),deadzone=5;
+   const radius=Math.max(16,r.width*.32);
+   const amount=distance<deadzone?0:clamp((distance-deadzone)/(radius-deadzone),0,1);
+   const nx=distance>0?dx/distance:0,ny=distance>0?dy/distance:0;
+   stick.x=nx*amount;
+   stick.y=-ny*amount;
+   const travel=Math.max(13,(r.width-thumb.offsetWidth)/2-4);
+   thumb.style.setProperty("--sx",(nx*Math.min(travel,distance))+"px");
+   thumb.style.setProperty("--sy",(ny*Math.min(travel,distance))+"px");
  }
- $("pad").addEventListener("pointerdown",e=>{e.preventDefault();stick.pointer=e.pointerId;e.currentTarget.setPointerCapture(e.pointerId);padMove(e)});
+ $("pad").addEventListener("pointerdown",e=>{if(mode!=="playing")return;e.preventDefault();stick.pointer=e.pointerId;e.currentTarget.setPointerCapture(e.pointerId);padMove(e)});
  $("pad").addEventListener("pointermove",e=>{if(stick.pointer===e.pointerId)padMove(e)});
- function releasePad(e){if(stick.pointer!==e.pointerId)return;stick.pointer=null;stick.x=stick.y=0;$("stick").style.transform="translate(0,0)"}
+ function releasePad(e){if(stick.pointer!==e.pointerId)return;stick.pointer=null;stick.x=stick.y=0;$("stick").style.setProperty("--sx","0px");$("stick").style.setProperty("--sy","0px")}
  $("pad").addEventListener("pointerup",releasePad);$("pad").addEventListener("pointercancel",releasePad);
  const l=$("lookArea");
- l.addEventListener("pointerdown",e=>{look.pointer=e.pointerId;look.x=e.clientX;look.y=e.clientY;l.setPointerCapture(e.pointerId)});
+ l.addEventListener("pointerdown",e=>{if(mode!=="playing")return;e.preventDefault();look.pointer=e.pointerId;look.x=e.clientX;look.y=e.clientY;l.setPointerCapture(e.pointerId)});
  l.addEventListener("pointermove",e=>{
    if(mode!=="playing"||look.pointer!==e.pointerId)return;
-   yaw+=clamp(e.clientX-look.x,-50,50)*.007;
-   pitch=clamp(pitch-(e.clientY-look.y)*.005,-.40,.36);
+   // Mobile aim speed is deliberately moderate and independent of canvas scale.
+   yaw+=clamp(e.clientX-look.x,-45,45)*.0048;
+   pitch=clamp(pitch-(e.clientY-look.y)*.0036,-.40,.36);
    look.x=e.clientX;look.y=e.clientY;
  });
  function releaseLook(e){if(look.pointer===e.pointerId)look.pointer=null}
@@ -502,11 +537,12 @@ function bind(){
    if(isTouch)controls.classList.add("active");
    timeLeft=480;updateHUD();sound(380,.3,"triangle",.06,210);
    toast("LOCATE TWO CORES. REACH EXTRACTION.",3);
-   try{if(isTouch&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{})}catch(e){}
+   // No forced fullscreen: it caused extra viewport/orientation shifts on mobile.
+   requestAnimationFrame(resize);
  };
  $("restartBtn").onclick=()=>location.reload();
  document.addEventListener("contextmenu",e=>e.preventDefault());
- document.addEventListener("visibilitychange",()=>{lastTime=performance.now()});
+ document.addEventListener("visibilitychange",()=>{lastTime=performance.now();resetTouchState()});
 }
 try{
  init3d();bind();loading.style.display="none";menu.style.display="flex";
