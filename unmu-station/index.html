@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="theme-color" content="#142325"/>
+  <meta name="description" content="안개 속 작은 역, 멈춰 버린 시계, 돌아오지 않은 열차. 열 개의 수수께끼로 잊힌 이야기를 되찾는 한국어 퍼즐 어드벤처."/>
+  <title>운무역 — 11시 47분의 기적</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
+  <link rel="preload" as="image" href="assets/unmu-station.webp"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header class="masthead">
+      <button class="brand" data-action="home" aria-label="운무역 첫 화면"><span class="brand-mark" id="brandMark"></span><span class="brand-name">운무역<span>UNMU STATION</span></span></button>
+      <div class="masthead-center"><span class="tiny-star">✦</span> 11시 47분의 기적 <span class="tiny-star">✦</span></div>
+      <nav class="header-tools" aria-label="게임 메뉴">
+        <button class="text-tool" data-action="help"><span data-icon="hint"></span><span>게임 안내</span></button>
+        <button class="text-tool" data-action="archive"><span data-icon="film"></span><span>컷신 보관함</span></button>
+        <button class="icon-button" id="soundToggle" data-action="sound" aria-label="소리 켜기" aria-pressed="false"></button>
+        <button class="icon-button" data-action="settings" aria-label="설정"><span data-icon="settings"></span></button>
+      </nav>
+    </header>
+
+    <main>
+      <section id="titleScreen" class="title-screen" aria-labelledby="gameTitle">
+        <div class="cover-art"><img src="assets/unmu-station.webp" alt="희미한 등불을 밝힌 산골 운무역과 안개 너머의 증기기관차"/></div>
+        <div class="cover-shade"></div><div class="mist mist-one"></div><div class="mist mist-two"></div><div class="grain"></div>
+        <div class="cover-meta"><span>THE UNMU CHRONICLES</span><span>어느 작은 역의 잊힌 이야기</span></div>
+        <div class="cover-copy">
+          <div class="eyebrow"><i></i> A HAND-DRAWN PUZZLE ADVENTURE</div>
+          <h1 id="gameTitle">운무역</h1>
+          <div class="title-subtitle"><span></span>11시 47분의 기적<span></span></div>
+          <p class="cover-logline">멈춰 버린 시계. 돌아오지 않은 열차.<br/>오십 년의 기다림 끝에서, 당신을 기다리는 이야기.</p>
+          <div class="cover-actions">
+            <button class="gold-button start-button" id="startButton" data-action="start">이야기 시작하기 <span data-icon="arrow"></span></button>
+            <button class="continue-button" id="continueButton" data-action="continue" hidden>기록에서 이어하기 <span data-icon="chevron"></span></button>
+          </div>
+          <p class="start-note" id="saveStatus">클릭으로 탐색하고, 수수께끼로 이야기를 이어 가세요.</p>
+        </div>
+        <div class="cover-ticket" aria-label="은하 7호 승차권"><div class="ticket-edge"></div><div class="ticket-head">운무선 <span>편도 승차권</span></div><div class="ticket-route">은하 7호 <span>→</span> 운무역</div><div class="ticket-bottom"><span>1974. 10. 27</span><strong>11:47</strong></div><div class="ticket-stamp">미도착</div></div>
+        <div class="cover-bottom"><span><span class="little-line"></span>안개 너머, 첫 번째 단서를 찾아서</span><span>6개의 장소 <b>·</b> 10개의 수수께끼 <b>·</b> 하나의 잊힌 약속</span></div>
+      </section>
+
+      <section id="gameScreen" class="game-screen" aria-label="게임 탐색" hidden>
+        <div class="chapter-bar"><div><span class="eyebrow" id="chapterLabel"></span><h2 id="sceneTitle"></h2></div><div class="chapter-progress"><span class="progress-line"><i id="progressFill"></i></span><span id="progressCount">0 / 10</span><span class="subtle">수수께끼</span></div></div>
+        <div class="exploration" id="exploration">
+          <div id="sceneArt" class="scene-art"></div><div class="scene-vignette"></div><div class="mist scene-mist"></div><div class="grain"></div>
+          <div class="scene-topline"><span id="sceneSubtitle"></span><button class="explore-toggle" id="exploreToggle" data-action="hotspots" aria-pressed="true"><span data-icon="eye"></span>조사 지점 표시</button></div>
+          <div id="hotspots" class="hotspots"></div>
+          <div class="scene-bottomline"><span id="sceneObjective"></span><span class="scene-clock"><span data-icon="clock"></span>11:47</span></div>
+        </div>
+        <div class="dialogue-bar"><div id="dialoguePortrait" class="dialogue-portrait"></div><div class="dialogue-body"><div class="dialogue-name" id="dialogueName">한겨울</div><p id="dialogueText" aria-live="polite"></p></div><div class="dialogue-indicator" aria-hidden="true">◆</div></div>
+        <div class="travel-bar"><div class="travel-heading"><span data-icon="map"></span><span>이동하기</span></div><nav id="sceneNav" aria-label="탐색 장소"></nav><button class="notebook-button" data-action="notebook"><span data-icon="book"></span>겨울의 수첩 <span class="note-count" id="noteCount">0</span></button></div>
+      </section>
+    </main>
+    <footer class="site-footer"><span>한 장의 표에서 시작되는, 작은 모험.</span><span>기록은 이 브라우저에 자동으로 저장됩니다 <i class="save-dot"></i></span></footer>
+  </div>
+  <dialog id="overlay" class="overlay" aria-labelledby="modalTitle"></dialog>
+  <dialog id="cutscenePlayer" class="cutscene-dialog" aria-label="이야기 컷신"></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
