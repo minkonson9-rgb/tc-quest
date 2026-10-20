@@ -1,0 +1,1008 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>블랙아웃 72</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Black+Han+Sans&display=swap">
+
+<script>
+/* =====================================================================
+   ✏️ 시나리오 편집 안내  —  이 블록만 고치면 게임 내용이 바뀝니다
+   ---------------------------------------------------------------------
+   역할(role) = { id, name, title, brief, difficulty, me, stats, cast, start, nodes, endings }
+     me      : 주인공 대사 이름표 (예: "나 · 안보실장")
+     stats   : 지표 4개 { 키: "표시 이름" }  모두 50에서 시작, 하나라도 0이 되면 collapse 결말
+     cast    : 등장인물 { id: { name, look:{...} } }   목소리만 나오면 { name, voice:true }
+               look 항목 → hairStyle: short|side|bob|bun|buzz|curly|pigtails
+                           hair, skin, outfit: suit|military|coat|school|cardigan, color, accent
+                           hat: peak|field|flat (없으면 생략), hatColor, band, glasses:true, age:1, scale:0.85
+   장면(node) = { time, place, bg, cast:[등장인물 id 최대 2명], lines:[...], choices:[...] }
+     bg      : sitroom dmz bunker river office apartment market checkpoint mountain tv aid conference dawn smoke
+     lines   : { who, text, mood, fx }
+               who  : "" = 해설, "me" = 주인공, 그 외 cast id
+               mood : neutral(기본) | stern | worried | calm
+               fx   : shake(화면 흔들림) | flash(번쩍) | red(경보)
+     choices : { label, detail, effects:{지표키:증감}, next:"다음 장면 id 또는 결말 id" }
+   결말(ending) = { title, tone:"good"|"mixed"|"bad", bg, text }   text 안의 \n 마다 한 줄씩 넘어갑니다
+   ===================================================================== */
+window.SCENARIO = {
+  title: "블랙아웃 72",
+  prologue: [
+    "202X년 2월 14일, 새벽 3시 47분.",
+    "조선중앙TV가 정규 편성을 끊고 장중한 음악만 반복해서 내보낸다.",
+    "최고지도자의 공개 활동은 72시간째 없다. 휴전선에서는 부대 이동이, 압록강 변에서는 민간인 행렬이 포착된다.",
+    "앞으로 72시간이 한반도의 운명을 가른다. 당신은 누구인가?"
+  ],
+  roles: [
+    /* ───────────── 1. 대한민국 국가안보실장 ───────────── */
+    {
+      id: "kr", name: "국가안보실장", title: "대한민국 대통령실", difficulty: 3, me: "나 · 안보실장",
+      brief: "지하 상황실에서 대통령에게 조언한다. 군사 대응, 대북 메시지, 미·중 조율, 난민 대책이 모두 당신 책상 위에 있다.",
+      stats: { stability: "한반도 안정", lives: "인명 보호", alliance: "한미 공조", opinion: "국내 여론" },
+      cast: {
+        han: { name: "한정우 · 국정원 1차장", look: { hairStyle: "side", hair: "#8d8a86", outfit: "suit", color: "#26324a", accent: "#7a2e3a", glasses: true, age: 1 } },
+        yoon: { name: "윤성호 · 합참의장", look: { hairStyle: "buzz", hair: "#2a2622", outfit: "military", color: "#4f5b3a", accent: "#d0b25a", hat: "peak", hatColor: "#4f5b3a", band: "#2a2f22", age: 1 } },
+        bradley: { name: "브래들리 · 연합사령관", look: { hairStyle: "buzz", hair: "#b89a6a", skin: "#efcfb2", outfit: "military", color: "#5c6450", accent: "#c9b46a" } },
+        seo: { name: "서지원 · 외교비서관", look: { hairStyle: "bob", hair: "#1d1915", outfit: "suit", color: "#4a4f57", accent: "#b9c2cc" } }
+      },
+      start: "k1",
+      nodes: {
+        k1: {
+          time: "T+00h · 03:47", place: "대통령실 지하 위기관리센터", bg: "sitroom", cast: ["han", "yoon"],
+          lines: [
+            { who: "", text: "새벽 3시 47분. 상황실 대형 화면에 정지된 평양 방송 화면이 떠 있다." },
+            { who: "han", mood: "worried", text: "조선중앙TV가 정규 편성을 끊었습니다. 최고지도자의 공개 활동은 72시간째 없습니다." },
+            { who: "han", text: "내부 평가로는 지도부 유고 가능성 '중간 이상'입니다." },
+            { who: "yoon", mood: "stern", fx: "shake", text: "전방 2개 군단 지역에서 북한군 이동이 포착됐습니다. 의도는 아직 모릅니다." },
+            { who: "me", text: "대통령께서 15분 뒤 NSC를 주재하신다. 첫 권고안을 정해야 해." }
+          ],
+          choices: [
+            { label: "전군 경계태세 격상, 대북 메시지는 보류", detail: "한미연합사와 즉시 공조", effects: { stability: -5, alliance: 10, opinion: 5 }, next: "k2a" },
+            { label: "남북 직통선으로 '군사 개입 의사 없음' 통보", detail: "오판에 의한 충돌을 먼저 막는다", effects: { stability: 10, alliance: -10, opinion: -5 }, next: "k2b" },
+            { label: "사실 확인 전까지 공식 반응 없음", detail: "섣부른 신호를 피한다", effects: { opinion: -10 }, next: "k2b" }
+          ]
+        },
+        k2a: {
+          time: "T+18h · 21:50", place: "한미 화상회의", bg: "sitroom", cast: ["bradley", "seo"],
+          lines: [
+            { who: "", text: "밤 9시 50분. 화면 너머에서 연합사령관이 지도를 펼친다." },
+            { who: "bradley", mood: "stern", text: "영변 경비 병력이 자리를 비웠습니다. 위성 판독 결과입니다." },
+            { who: "bradley", text: "핵·화학물질 확보를 위한 연합 특수작전을 승인해 주십시오. 시간이 없습니다." },
+            { who: "seo", mood: "worried", fx: "flash", text: "실장님, 방금 베이징이 '외부 군사 개입 불가'를 공개 경고했습니다." },
+            { who: "me", text: "어느 쪽을 택해도 누군가는 등을 돌린다." }
+          ],
+          choices: [
+            { label: "연합 특수작전 승인", detail: "WMD 유출을 막는 것이 최우선", effects: { alliance: 15, stability: -20, lives: -5 }, next: "k3a" },
+            { label: "중국에 핵물질 공동 관리 협의 제안", detail: "충돌 대신 거래", effects: { alliance: -15, stability: 10 }, next: "k3b" },
+            { label: "유엔 안보리 긴급회의 소집이 먼저", detail: "국제적 정당성 확보", effects: { stability: 5, alliance: -5, opinion: -5 }, next: "k3b" }
+          ]
+        },
+        k2b: {
+          time: "T+18h · 21:50", place: "대통령실 지하 위기관리센터", bg: "sitroom", cast: ["yoon", "seo"],
+          lines: [
+            { who: "", text: "하루가 지났다. 상황판의 숫자가 쉬지 않고 바뀐다." },
+            { who: "yoon", text: "휴전선을 넘어 귀순한 북한군이 300명을 넘었습니다." },
+            { who: "seo", mood: "worried", text: "서해에는 주민을 태운 어선 수십 척이 남하 중입니다. 수용시설은 사흘 치뿐이에요." },
+            { who: "seo", text: "여당 안에서도 '선별 수용' 목소리가 커지고 있습니다." },
+            { who: "me", text: "사람을 먼저 볼 것인가, 국경을 먼저 볼 것인가." }
+          ],
+          choices: [
+            { label: "전면 수용, 임시 수용시설 즉시 개설", detail: "체육관·군부대 개방", effects: { lives: 15, opinion: -10, stability: 5 }, next: "k3b" },
+            { label: "선별 수용, 해상 차단선 설정", detail: "보안 심사 우선", effects: { lives: -15, opinion: 5, stability: 5 }, next: "k3a" }
+          ]
+        },
+        k3a: {
+          time: "T+48h · 03:47", place: "중부전선 · 비무장지대", bg: "dmz", cast: ["han", "yoon"],
+          lines: [
+            { who: "", text: "48시간째 새벽. 휴전선 너머 탐조등이 쉬지 않고 움직인다." },
+            { who: "han", text: "평양에서 군부 '집단지도부'가 수립을 선포했습니다." },
+            { who: "han", mood: "stern", text: "그들은 우리 군의 움직임을 '침략 준비'로 규정했습니다." },
+            { who: "yoon", mood: "stern", fx: "red", text: "수도권을 겨냥한 장사정포 부대에 대기 명령이 내려졌다는 첩보입니다!" },
+            { who: "me", text: "결정할 시간이 많지 않다." }
+          ],
+          choices: [
+            { label: "집단지도부와 비밀 접촉", detail: "체제 보장 대신 비핵화 로드맵", effects: { stability: 10, alliance: -5 }, next: "e_kr_talks" },
+            { label: "억제력 과시, 선제행동은 없음", detail: "버티며 기다린다", effects: { stability: -5, opinion: 5 }, next: "e_kr_cold" },
+            { label: "포병 진지 선제 타격 건의", detail: "위협을 먼저 제거한다", effects: { stability: -30, lives: -25, alliance: 5 }, next: "e_kr_war" }
+          ]
+        },
+        k3b: {
+          time: "T+48h · 03:47", place: "대통령실 지하 위기관리센터", bg: "sitroom", cast: ["seo", "han"],
+          lines: [
+            { who: "", text: "화면에 압록강 변 위성사진이 떠 있다. 줄지어 선 장갑차들." },
+            { who: "seo", mood: "worried", text: "중국 인민해방군 3개 집단군이 국경에 전개했습니다." },
+            { who: "han", mood: "stern", text: "베이징은 북한 북부에 '인도적 안정 지대' 설치를 시사하고 있습니다." },
+            { who: "seo", text: "워싱턴이 서울의 입장을 묻고 있습니다. 한 시간 안에 답을 줘야 합니다." },
+            { who: "me", text: "우리가 먼저 판을 짤 수 있을까." }
+          ],
+          choices: [
+            { label: "한·미·중 3자 긴급 협의 제안", detail: "누구도 단독으로 움직이지 않는다", effects: { stability: 10, alliance: 5 }, next: "e_kr_talks" },
+            { label: "중국 진입 묵인, 대신 비무장 조건 요구", detail: "현실적인 타협", effects: { stability: 5, opinion: -15, alliance: -10 }, next: "e_kr_partition" },
+            { label: "한국 독자 인도지원 통로 개설", detail: "개성·판문점을 통한 식량·의약품", effects: { lives: 15, stability: -5, opinion: 5 }, next: "e_kr_humanitarian" }
+          ]
+        }
+      },
+      endings: {
+        e_kr_talks: { title: "관리된 전환", tone: "good", bg: "conference", text: "총성 없이 1주일이 지났다.\n판문점에서 남·북·미·중 4자 회담이 열리고, 핵시설에는 국제 사찰단이 들어간다.\n통일은 아직 멀지만, 처음으로 '다음 단계'를 이야기할 수 있게 되었다." },
+        e_kr_cold: { title: "얼어붙은 휴전", tone: "mixed", bg: "dmz", text: "전쟁은 일어나지 않았다.\n평양의 새 지도부는 내부 숙청으로 권력을 다졌고, 국경은 다시 닫혔다.\n변한 것은 많지 않다. 다만 이번에는 모두가 붕괴가 '가능하다'는 것을 보았다." },
+        e_kr_war: { title: "국지전", tone: "bad", bg: "smoke", text: "선제 타격에 대한 보복 포격이 수도권 외곽에 떨어졌다.\n확전은 72시간 만에 멈췄지만, 사상자 수는 아직 집계 중이다.\n북한 체제는 무너졌고, 그 자리를 채운 것은 혼란이다." },
+        e_kr_partition: { title: "분할 관리", tone: "mixed", bg: "river", text: "중국군이 청천강 이북에 들어갔다.\n한반도는 다시 선을 하나 더 갖게 되었다.\n서울의 거리에서는 '누가 이것을 허락했나'라는 질문이 끝나지 않는다." },
+        e_kr_humanitarian: { title: "열린 통로", tone: "good", bg: "aid", text: "개성을 지나는 트럭 행렬이 매일 이어진다.\n북한 주민들은 처음으로 남쪽 글씨가 찍힌 쌀 포대를 받았다.\n정치는 여전히 얽혀 있지만, 사람이 먼저 건너간 길은 쉽게 닫히지 않는다." },
+        collapse: { title: "통제 상실", tone: "bad", bg: "sitroom", text: "상황실의 판단이 현실을 따라가지 못했다.\n결정권은 워싱턴과 베이징, 그리고 거리로 넘어갔다.\n당신은 사임 기자회견을 준비한다." }
+      }
+    },
+
+    /* ───────────── 2. 북한 인민군 군단장 ───────────── */
+    {
+      id: "nk", name: "군단장 (중장)", title: "조선인민군 제7군단", difficulty: 4, me: "나 · 군단장",
+      brief: "평양의 명령이 끊긴 지 이틀째. 휘하 병력은 3만. 여러 세력이 당신의 충성을 요구한다. 누구 편에 설 것인가.",
+      stats: { control: "병력 장악", survival: "생존", people: "민심", trust: "외부 신뢰" },
+      cast: {
+        ri: { name: "리명철 · 정치위원", look: { hairStyle: "short", hair: "#1b1816", outfit: "military", color: "#4a5536", accent: "#c8a64a", hat: "peak", hatColor: "#4a5536", band: "#a3262a", age: 1 } },
+        kim: { name: "김광수 · 참모장", look: { hairStyle: "short", hair: "#221e1b", outfit: "military", color: "#4a5536", accent: "#c8a64a" } },
+        envoy: { name: "남측 협상대표", look: { hairStyle: "side", hair: "#2a2522", outfit: "suit", color: "#2f3b4f", accent: "#4a6fa5", glasses: true } },
+        radio: { name: "처남 (무전)", voice: true },
+        pyongyang: { name: "평양 (무전)", voice: true },
+        south: { name: "남측 (무선)", voice: true },
+        factionA: { name: "평양 갑 (무전)", voice: true },
+        factionB: { name: "평양 을 (무전)", voice: true }
+      },
+      start: "n1",
+      nodes: {
+        n1: {
+          time: "T+00h · 04:10", place: "강원도 · 제7군단 지휘소", bg: "bunker", cast: ["ri", "kim"],
+          lines: [
+            { who: "", text: "새벽 4시 10분. 지휘소 전등이 흔들린다. 평양 총참모부와의 통신이 끊긴 지 한 시간." },
+            { who: "ri", mood: "stern", text: "군단장 동지. 최고사령부의 마지막 지시입니다. 전 부대 남진 경계를 강화하십시오." },
+            { who: "kim", mood: "worried", text: "그 지시, 어디서 받은 겁니까? 통신은 끊겼는데요." },
+            { who: "ri", mood: "stern", fx: "shake", text: "지금 의심하는 겁니까, 참모장?" },
+            { who: "", text: "한 시간 전, 후방 사단장인 처남이 암호 무전으로 짧게 말했었다." },
+            { who: "radio", text: "…평양은 끝났다. 살 길을 찾아라." },
+            { who: "me", text: "3만 명의 목숨이 이 결정에 달려 있다." }
+          ],
+          choices: [
+            { label: "정치위원의 명령을 따른다", detail: "규율이 무너지면 모든 게 무너진다", effects: { control: 10, trust: -10 }, next: "n2a" },
+            { label: "정치위원을 연금하고 직접 지휘", detail: "되돌릴 수 없는 선택", effects: { control: -15, survival: -10, trust: 10 }, next: "n2b" },
+            { label: "관망. 부대는 집결지에 그대로", detail: "움직이지 않는 것도 선택이다", effects: { control: -5 }, next: "n2b" }
+          ]
+        },
+        n2a: {
+          time: "T+20h · 00:30", place: "제7군단 지휘소", bg: "bunker", cast: ["kim"],
+          lines: [
+            { who: "", text: "자정이 지났다. 무전기에서 낯선 목소리가 흘러나온다." },
+            { who: "pyongyang", fx: "flash", text: "군사위원회 명령이다. 2개 사단을 즉시 평양 방어로 이동시켜라." },
+            { who: "kim", mood: "worried", text: "병사들 식량은 사흘 치입니다. 이동하면 전선이 비고 보급창은 멀어집니다." },
+            { who: "me", text: "중앙에 줄을 설 것인가, 병사의 배를 먼저 채울 것인가." }
+          ],
+          choices: [
+            { label: "명령대로 평양으로 이동", detail: "중앙에 줄을 선다", effects: { control: 5, people: -10, survival: 5 }, next: "n3a" },
+            { label: "이동 명목으로 도 식량창고부터 확보", detail: "병사를 먹이는 자가 병사를 갖는다", effects: { control: 15, people: -15 }, next: "n3b" }
+          ]
+        },
+        n2b: {
+          time: "T+20h · 00:30", place: "제7군단 지휘소", bg: "bunker", cast: ["kim"],
+          lines: [
+            { who: "", text: "통신대 군관이 뛰어 들어왔다. 군 주파수에 외부 신호가 잡혔다." },
+            { who: "south", text: "제7군단장에게. 부대의 안전을 논의하고 싶다. 응답 바란다." },
+            { who: "kim", mood: "worried", text: "2개 대대에서 탈영이 시작됐습니다. 일부는 남쪽으로, 일부는 집으로 갔습니다." },
+            { who: "me", text: "듣기만 하는 것도 배신일까." }
+          ],
+          choices: [
+            { label: "응답한다", detail: "듣는 것은 배신이 아니다", effects: { trust: 15, control: -10 }, next: "n3b" },
+            { label: "무시하고 내부 단속", detail: "탈영병 처벌 명령", effects: { control: 10, people: -15, trust: -10 }, next: "n3a" }
+          ]
+        },
+        n3a: {
+          time: "T+50h · 06:00", place: "제7군단 지휘소", bg: "bunker", cast: ["kim"],
+          lines: [
+            { who: "", text: "평양의 군사위원회가 두 파벌로 갈라졌다. 무전기 두 대가 번갈아 울린다." },
+            { who: "factionA", text: "군단장, 우리 편에 서시오. 저쪽은 반역자요." },
+            { who: "factionB", fx: "shake", text: "반역자는 저들이오! 오늘 안에 결정하시오." },
+            { who: "kim", mood: "worried", text: "주민들이 배급소 앞에 모여 있습니다. 오늘도 배급은 없습니다." },
+            { who: "me", text: "어느 깃발 아래 설 것인가. 아니면 내 깃발을 세울 것인가." }
+          ],
+          choices: [
+            { label: "더 강한 쪽, 군사위원회 주류 지지", detail: "새 질서의 한 축이 된다", effects: { survival: 10, people: -10 }, next: "e_nk_junta" },
+            { label: "군단 지역을 독자적으로 통치", detail: "평양과도 서울과도 거리를 둔다", effects: { control: 10, trust: -15 }, next: "e_nk_warlord" },
+            { label: "남측과 투항 협상", detail: "부하들의 목숨을 지킨다", effects: { trust: 15, survival: -10 }, next: "e_nk_defect" }
+          ]
+        },
+        n3b: {
+          time: "T+50h · 06:00", place: "군사분계선 인근 · 임시 접촉 지점", bg: "bunker", cast: ["envoy", "kim"],
+          lines: [
+            { who: "envoy", mood: "calm", text: "무장을 내려놓으면 장병 신변 보장, 지휘관 사면, 지역 식량 지원을 약속하겠습니다." },
+            { who: "kim", mood: "worried", text: "(작게) 군단장님… 저들은 3번 저장고를 모릅니다." },
+            { who: "", text: "군단 지역 깊은 곳에 화학무기 저장고가 하나 있다." },
+            { who: "me", text: "이것이 마지막 협상 카드일지도 모른다." }
+          ],
+          choices: [
+            { label: "조건 수락, 무장 해제", detail: "총을 내려놓는다", effects: { trust: 15, people: 10, control: -10 }, next: "e_nk_disarm" },
+            { label: "저장고 정보를 협상 카드로 쓴다", detail: "더 많은 것을 받아낸다", effects: { trust: -5, survival: 10 }, next: "e_nk_broker" },
+            { label: "거부한다", detail: "아무도 믿을 수 없다", effects: { trust: -15, control: 5 }, next: "e_nk_warlord" }
+          ]
+        }
+      },
+      endings: {
+        e_nk_junta: { title: "새 질서의 장군", tone: "mixed", bg: "bunker", text: "당신은 군사위원회의 일원이 되었다.\n계급장은 하나 늘었고, 숙청 명단에 서명할 일도 늘었다.\n체제는 살아남았다. 그것이 당신에게 좋은 일인지는 아직 모른다." },
+        e_nk_warlord: { title: "동부의 군벌", tone: "bad", bg: "mountain", text: "군단 지역은 이제 당신의 땅이다. 평양도 서울도 당신을 통제하지 못한다.\n그러나 식량은 줄고, 탈영은 늘고, 경쟁자는 많다.\n군벌의 시간은 대개 짧다." },
+        e_nk_defect: { title: "백기", tone: "mixed", bg: "dmz", text: "3만 명 중 2만 4천 명이 남측 관리 아래 들어왔다. 나머지는 흩어졌다.\n당신은 판문점에서 조사를 받는다.\n부하들은 살았다. 고향의 친척들은 어떻게 되었을지 알 수 없다." },
+        e_nk_disarm: { title: "총을 내려놓은 군단", tone: "good", bg: "dawn", text: "무장 해제는 사흘 만에 끝났다.\n국제 감시단이 무기고를 봉인했고, 첫 식량 트럭이 군단 지역에 들어왔다.\n병사들은 집으로 돌아가고 있다. 역사는 당신을 다르게 기억할지도 모른다." },
+        e_nk_broker: { title: "위험한 거래", tone: "mixed", bg: "bunker", text: "저장고 정보는 당신에게 망명과 보장을 사주었다.\n그러나 협상이 길어지는 동안 저장고 경비 일부가 사라졌다.\n누가 무엇을 가지고 갔는지, 아무도 모른다." },
+        collapse: { title: "무너진 지휘", tone: "bad", bg: "mountain", text: "명령은 더 이상 전달되지 않는다.\n부대는 흩어졌고, 당신의 이름은 여러 세력의 수배 명단에 올랐다.\n당신에게는 지프 한 대와 운전병 하나만 남았다." }
+      }
+    },
+
+    /* ───────────── 3. 중국 외교부 특사 ───────────── */
+    {
+      id: "cn", name: "외교부 특사", title: "중화인민공화국 외교부", difficulty: 3, me: "나 · 특사",
+      brief: "베이징은 '안정'을 원한다. 국경 너머의 혼란을 막고, 미국의 영향력이 압록강까지 오는 것을 막는 것이 당신의 임무다.",
+      stats: { border: "국경 안정", influence: "대북 영향력", us: "대미 관계", reputation: "국제 평판" },
+      cast: {
+        xiao: { name: "샤오린 · 수행비서", look: { hairStyle: "bun", hair: "#141210", outfit: "suit", color: "#2c2c33", accent: "#8b1e24" } },
+        liaoning: { name: "랴오닝성 간부", look: { hairStyle: "side", hair: "#9a9792", outfit: "coat", color: "#3e3a35", age: 1, glasses: true } },
+        zhao: { name: "자오 · 북부전구 대교", look: { hairStyle: "buzz", hair: "#1a1714", outfit: "military", color: "#3f5636", accent: "#c4a44a", hat: "peak", hatColor: "#3f5636", band: "#2b3a25" } },
+        nkcall: { name: "평양 측 인사 (전화)", voice: true },
+        uscall: { name: "워싱턴 (전화)", voice: true }
+      },
+      start: "c1",
+      nodes: {
+        c1: {
+          time: "T+06h · 09:50", place: "랴오닝성 단둥 · 압록강 변", bg: "river", cast: ["xiao", "liaoning"],
+          lines: [
+            { who: "", text: "오전 9시 50분. 얼어붙은 압록강 위로 사람들이 줄지어 건너온다." },
+            { who: "liaoning", mood: "worried", text: "하루 수천 명입니다. 성(省)의 수용 능력은 이미 한계를 넘었습니다." },
+            { who: "xiao", text: "베이징의 지시는 한 줄입니다. '안정 최우선.'" },
+            { who: "me", text: "안정이란 무엇인가. 문을 닫는 것인가, 여는 것인가." }
+          ],
+          choices: [
+            { label: "국경 봉쇄, 월경자 송환", detail: "원칙을 지킨다", effects: { border: 15, reputation: -20 }, next: "c2a" },
+            { label: "임시 수용소 개설", detail: "국경은 막되 사람은 받는다", effects: { border: -5, reputation: 15 }, next: "c2b" },
+            { label: "평양의 누구와든 접촉해 상황 파악", detail: "정보가 먼저다", effects: { influence: 10 }, next: "c2a" }
+          ]
+        },
+        c2a: {
+          time: "T+24h · 03:47", place: "단둥 현장 지휘부", bg: "office", cast: ["xiao"],
+          lines: [
+            { who: "", text: "새벽. 책상 위 전화 두 대가 거의 동시에 울린다." },
+            { who: "nkcall", text: "연료와 식량을 지원해 주시오. 그러면 중국과의 특별한 관계를 보장하겠소." },
+            { who: "uscall", text: "핵물질 행방에 대해 공동 대응을 제안합니다. 지금 바로요." },
+            { who: "xiao", mood: "worried", text: "둘 다 답을 기다리고 있습니다, 특사님." }
+          ],
+          choices: [
+            { label: "평양 군부에 지원 약속", detail: "평양에 우리 사람을 세운다", effects: { influence: 15, us: -15, reputation: -5 }, next: "c3a" },
+            { label: "미국과 핫라인 개설", detail: "핵 문제는 혼자 감당할 수 없다", effects: { us: 15, influence: -5 }, next: "c3b" }
+          ]
+        },
+        c2b: {
+          time: "T+24h · 03:47", place: "단둥 현장 지휘부", bg: "office", cast: ["xiao", "liaoning"],
+          lines: [
+            { who: "xiao", text: "서울이 수용소 운영비 분담과 인도적 협력을 제안해 왔습니다." },
+            { who: "liaoning", mood: "stern", text: "한국이 국경 문제에 발을 들이게 됩니다. 당 내부 반발이 클 겁니다." },
+            { who: "me", text: "명분과 체면 사이." }
+          ],
+          choices: [
+            { label: "제안 수락", detail: "공동의 위기에는 공동의 해법", effects: { reputation: 10, us: 10, influence: -10 }, next: "c3b" },
+            { label: "정중히 거절, 독자 운영", detail: "국경은 우리의 문제다", effects: { influence: 5, border: -5 }, next: "c3a" }
+          ]
+        },
+        c3a: {
+          time: "T+52h · 07:00", place: "압록강 변 · 전방 지휘소", bg: "river", cast: ["zhao", "xiao"],
+          lines: [
+            { who: "zhao", mood: "stern", text: "북부전구 안입니다. 북한 영내 50km 완충지대로 진입하겠습니다." },
+            { who: "zhao", text: "명분은 난민 유입 차단과 핵시설 보호입니다." },
+            { who: "xiao", mood: "worried", text: "베이징은 특사님의 현장 판단을 기다립니다." },
+            { who: "me", text: "강을 건너는 순간, 돌아올 수 없다." }
+          ],
+          choices: [
+            { label: "진입안 승인 건의", detail: "혼란을 국경 밖에서 막는다", effects: { border: 15, reputation: -15, us: -15 }, next: "e_cn_buffer" },
+            { label: "의료·식량 지원만 제한적으로", detail: "군화 없이 영향력을", effects: { influence: 10, reputation: 5 }, next: "e_cn_patron" },
+            { label: "진입 철회, 다자회담 제안", detail: "베이징이 판을 주재한다", effects: { us: 10, reputation: 10, influence: -5 }, next: "e_cn_multilateral" }
+          ]
+        },
+        c3b: {
+          time: "T+52h · 07:00", place: "단둥 현장 지휘부", bg: "office", cast: ["xiao", "zhao"],
+          lines: [
+            { who: "", text: "워싱턴에서 합의문 초안이 도착했다." },
+            { who: "xiao", text: "미·중 핵물질 공동관리안입니다. 사찰단은 양국 동수, 작전 지역은 영변과 저장고 몇 곳." },
+            { who: "zhao", mood: "stern", fx: "shake", text: "미군이 조선 땅을 밟는 선례입니다. 군은 받아들일 수 없습니다." },
+            { who: "me", text: "서명 한 줄에 한반도의 지도가 걸려 있다." }
+          ],
+          choices: [
+            { label: "서명 권고", detail: "핵이 흩어지는 것보다 낫다", effects: { us: 15, reputation: 10, influence: -10 }, next: "e_cn_multilateral" },
+            { label: "조건부: 미군 북진 금지 명문화", detail: "얻을 것은 얻는다", effects: { influence: 10, us: -5 }, next: "e_cn_bargain" },
+            { label: "시간을 끈다", detail: "평양의 판세가 정리될 때까지", effects: { us: -15, influence: 5 }, next: "e_cn_patron" }
+          ]
+        }
+      },
+      endings: {
+        e_cn_buffer: { title: "완충지대", tone: "mixed", bg: "river", text: "인민해방군이 압록강 남쪽에 주둔한다. 국경은 조용해졌다.\n그러나 '중국의 점령'이라는 말이 국제 언론을 덮었다.\n서울과 워싱턴은 그 선을 쉽게 잊지 않을 것이다." },
+        e_cn_patron: { title: "새 후견인", tone: "mixed", bg: "office", text: "평양의 새 지도부가 베이징에 감사 전문을 보냈다. 당신의 영향력은 커졌다.\n동시에 당신은 무너진 경제를 떠안은 후원자가 되었다.\n비용 청구서는 이제 시작이다." },
+        e_cn_multilateral: { title: "베이징 회담", tone: "good", bg: "conference", text: "다자회담이 오랜만에 베이징에서 다시 열렸다.\n핵물질은 국제 관리 아래 들어갔고, 국경은 안정을 찾았다.\n당신은 '책임 있는 대국'의 얼굴로 기자회견장에 섰다." },
+        e_cn_bargain: { title: "선을 그은 거래", tone: "good", bg: "conference", text: "합의문에는 미군이 일정 선 이북으로 오지 않는다는 조항이 들어갔다.\n베이징은 안도했고, 워싱턴은 불만스럽게 서명했다.\n한반도의 새 지도에 중국의 펜 자국이 선명하다." },
+        collapse: { title: "소환", tone: "bad", bg: "office", text: "국경은 뚫렸고 평양에 대한 영향력은 사라졌으며 워싱턴과의 관계는 최악이다.\n베이징은 당신을 소환했다.\n귀국 비행기 안에서 당신은 보고서의 첫 문장을 고민한다." }
+      }
+    },
+
+    /* ───────────── 4. 평양의 시민 ───────────── */
+    {
+      id: "citizen", name: "평양의 교사", title: "평양시 중구역 · 40대", difficulty: 5, me: "나",
+      brief: "권력도 정보도 없다. 열두 살 딸과 노모가 있고, 소문만 무성하다. 살아남는 것, 그리고 무엇을 믿을지 정하는 것이 당신의 싸움이다.",
+      stats: { family: "가족 안전", food: "식량", info: "정보", hope: "희망" },
+      cast: {
+        byeol: { name: "은별 · 딸", look: { hairStyle: "pigtails", hair: "#1a1613", outfit: "school", color: "#f1f0ea", accent: "#c7362f", scale: 0.84 } },
+        mother: { name: "어머니", look: { hairStyle: "bun", hair: "#c9c6c0", outfit: "cardigan", color: "#6d5a48", accent: "#e9e2d2", age: 1 } },
+        banjang: { name: "인민반장", look: { hairStyle: "curly", hair: "#2a221d", outfit: "coat", color: "#5a4b5e", age: 1 } },
+        neighbor: { name: "옆집 남자", look: { hairStyle: "short", hair: "#221d19", outfit: "coat", color: "#3f4a42", hat: "flat", hatColor: "#3a3530" } },
+        soldier: { name: "검문소 병사", look: { hairStyle: "buzz", hair: "#1d1a17", outfit: "military", color: "#55603f", accent: "#a33a30", hat: "field", hatColor: "#55603f" } },
+        anchor: { name: "조선중앙TV", voice: true }
+      },
+      start: "p1",
+      nodes: {
+        p1: {
+          time: "T+04h · 07:50", place: "평양시 중구역 · 아파트 5층", bg: "apartment", cast: ["byeol", "banjang"],
+          lines: [
+            { who: "", text: "아침 7시 50분. 방송에서는 같은 음악만 흘러나온다." },
+            { who: "banjang", mood: "stern", text: "선생, 오늘은 외출 삼가요. 위에서 그렇게 내려왔어." },
+            { who: "byeol", mood: "worried", text: "엄마, 오늘 학교 안 가?" },
+            { who: "", text: "학교에서는 아무 연락이 없다. 창밖으로 장마당 쪽에 사람들이 몰리는 게 보인다." },
+            { who: "banjang", mood: "worried", text: "쌀값이 밤새 세 배가 됐대. 세 배." },
+            { who: "me", text: "무엇부터 해야 하지." }
+          ],
+          choices: [
+            { label: "모아둔 돈으로 장마당에서 쌀을 산다", detail: "무슨 일이든 먹을 것이 먼저", effects: { food: 20, info: 5, family: -5 }, next: "p2a" },
+            { label: "인민반 지시대로 집에서 기다린다", detail: "눈에 띄지 않는 게 안전하다", effects: { family: 5, food: -10 }, next: "p2b" },
+            { label: "동료 교사 집에서 몰래 외국 라디오를 듣는다", detail: "진실을 알아야 한다", effects: { info: 20, family: -10 }, next: "p2a" }
+          ]
+        },
+        p2a: {
+          time: "T+22h · 02:00", place: "아파트 5층 · 현관", bg: "apartment", cast: ["neighbor", "mother"],
+          lines: [
+            { who: "", text: "새벽 두 시. 누군가 문을 조용히 두드린다." },
+            { who: "neighbor", mood: "worried", text: "신의주 쪽 국경 경비가 사라졌대. 남쪽으로 가는 트럭이 있어." },
+            { who: "neighbor", text: "짐칸에 자리가 하나 있어. 대신… 가진 돈 거의 다 내야 해." },
+            { who: "mother", mood: "calm", text: "나는 안 간다. 여기서 태어났고 여기서 죽을 거다." },
+            { who: "me", text: "떠날 것인가, 남을 것인가." }
+          ],
+          choices: [
+            { label: "떠난다. 딸과 어머니를 데리고", detail: "어머니를 설득한다", effects: { hope: 15, food: -10, family: -5 }, next: "p3a" },
+            { label: "남는다", detail: "길 위가 더 위험할 수도 있다", effects: { family: 5, hope: -10 }, next: "p3b" }
+          ]
+        },
+        p2b: {
+          time: "T+22h · 02:00", place: "아파트 5층", bg: "apartment", cast: ["banjang"],
+          lines: [
+            { who: "", fx: "flash", text: "밤사이 보위부 요원들이 아파트를 돌았다. 2층 집 남자가 끌려갔다." },
+            { who: "banjang", mood: "worried", text: "(작게) 선생… 선생 이름도 누가 댔대." },
+            { who: "me", text: "심장이 너무 크게 뛴다." }
+          ],
+          choices: [
+            { label: "자진해서 협조하겠다고 말한다", detail: "의심받기 전에 먼저", effects: { family: 10, hope: -15, info: 5 }, next: "p3b" },
+            { label: "새벽에 어머니 고향 시골로 피신", detail: "가방 하나만 챙긴다", effects: { family: -5, food: -10, hope: 10 }, next: "p3a" }
+          ]
+        },
+        p3a: {
+          time: "T+40h · 18:20", place: "평안북도 · 국도 검문소", bg: "checkpoint", cast: ["soldier", "byeol"],
+          lines: [
+            { who: "", text: "해 질 녘. 도로를 막은 검문소." },
+            { who: "soldier", mood: "stern", fx: "shake", text: "멈추시오! 어디 가는 거요?" },
+            { who: "", text: "총을 든 병사의 얼굴이 앳되다. 딸이 손을 꽉 쥔다." },
+            { who: "byeol", mood: "worried", text: "엄마…" },
+            { who: "", text: "옆으로 산길이 어둡게 이어진다." }
+          ],
+          choices: [
+            { label: "남은 돈과 시계를 건넨다", detail: "병사들도 배가 고프다", effects: { food: -10, family: 10 }, next: "e_p_border" },
+            { label: "어두워지면 산길로 우회", detail: "어머니가 버틸 수 있을까", effects: { family: -20, hope: 10 }, next: "e_p_mountain" },
+            { label: "평양으로 돌아간다", detail: "아직 늦지 않았다", effects: { hope: -10, family: 5 }, next: "e_p_return" }
+          ]
+        },
+        p3b: {
+          time: "T+60h · 12:00", place: "평양 · 집", bg: "tv", cast: ["byeol"],
+          lines: [
+            { who: "", text: "60시간 만에 방송이 재개됐다. 낯선 군복을 입은 아나운서." },
+            { who: "anchor", text: "인민들에게 알린다. 질서는 회복되었다. 새 영도체계가 수립되었다." },
+            { who: "", text: "학교는 다음 주 다시 문을 연다. 새 교육 지침도 함께 내려왔다." },
+            { who: "byeol", text: "엄마, 이제 학교 가는 거야?" },
+            { who: "me", text: "가르쳐야 할 내용이 바뀌었다." }
+          ],
+          choices: [
+            { label: "지침대로 가르친다", detail: "가족을 지키는 방법", effects: { family: 10, hope: -10 }, next: "e_p_survive" },
+            { label: "아이들에게 조심스럽게 사실을 알려준다", detail: "교사로서 할 수 있는 일", effects: { hope: 15, family: -15 }, next: "e_p_teacher" },
+            { label: "국제 구호 배급소에서 일하겠다고 자원", detail: "곧 들어온다는 소문이 있다", effects: { food: 15, info: 10 }, next: "e_p_volunteer" }
+          ]
+        }
+      },
+      endings: {
+        e_p_border: { title: "건너편", tone: "good", bg: "aid", text: "검문소를 지나 나흘 뒤, 가족은 국경 근처 국제 수용시설에 도착했다.\n딸은 처음 보는 초콜릿을 쪼개 할머니에게 건넨다.\n앞날은 모르지만 셋이 함께 있다." },
+        e_p_mountain: { title: "산길", tone: "mixed", bg: "mountain", text: "산길은 생각보다 길었다. 어머니는 둘째 날 밤 더는 걷지 못했다.\n마을 사람의 도움으로 셋은 살아남았지만, 국경은 아직 멀다.\n딸은 이제 길을 당신보다 잘 안다." },
+        e_p_return: { title: "다시 평양", tone: "mixed", bg: "apartment", text: "돌아온 아파트는 그대로다. 이웃 몇 집은 비었다.\n떠난 사람들의 소식은 없다.\n당신은 문을 잠그고, 어떤 것이 옳았는지 매일 밤 다시 생각한다." },
+        e_p_survive: { title: "버틴 사람", tone: "mixed", bg: "apartment", text: "체제는 이름만 바꿔 다시 섰다. 당신은 교단에 서서 새 교과서를 읽는다.\n가족은 무사하다.\n딸이 묻는다. '엄마, 그때 무슨 일이 있었어?' 당신은 아직 대답하지 못한다." },
+        e_p_teacher: { title: "작은 교실", tone: "good", bg: "dawn", text: "당신이 칠판 귀퉁이에 적은 몇 줄은 오래 남았다.\n위험했고, 한동안 감시를 받았다.\n몇 년 뒤 한 제자가 찾아와 그날 수업을 기억한다고 말한다." },
+        e_p_volunteer: { title: "배급소의 선생님", tone: "good", bg: "aid", text: "구호 식량 배급소에서 당신은 명단을 정리하고 아이들 이름을 부른다.\n처음으로 바깥세상 사람들과 이야기한다.\n딸은 배급소 구석에서 숙제를 한다. 무언가 바뀌고 있다." },
+        collapse: { title: "흩어진 가족", tone: "bad", bg: "market", text: "혼란 속에서 버틸 힘이 바닥났다.\n당신은 어느 창고 바닥에서 눈을 뜬다.\n딸이 어디 있는지 확인하는 것, 그것이 이제 유일한 목표다." }
+      }
+    }
+  ]
+};
+</script>
+
+<style>
+/* Layout: 게임기처럼 위 화면(무대)과 아래 화면(대사창)이 하나의 본체에 붙어 있다 */
+:root {
+  --page: #dfe3e6;
+  --bezel: #2a3138;
+  --bezel-hi: #3a434c;
+  --panel: #f6f4ee;
+  --ink: #1d232a;
+  --ink-soft: #5b6670;
+  --rule: #d2cfc5;
+  --signal: #1f5f8b;
+  --stamp: #b3261e;
+  --good: #2e7d4f; --warn: #a86d12; --bad: #b3261e;
+  --display: "Black Han Sans", "IBM Plex Sans KR", sans-serif;
+  --body: "Gowun Batang", "Noto Serif KR", serif;
+  --ui: "IBM Plex Sans KR", "Apple SD Gothic Neo", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --page: #0f1317; --bezel: #1b2127; --bezel-hi: #2a323a; --panel: #1f262d; --ink: #e8ebee; --ink-soft: #9aa6b0; --rule: #34404a;
+  --signal: #79b6e3; --stamp: #ef6a5f; --good: #5cc28a; --warn: #e2a84a; --bad: #ef6a5f; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --page: #0f1317; --bezel: #1b2127; --bezel-hi: #2a323a; --panel: #1f262d; --ink: #e8ebee; --ink-soft: #9aa6b0; --rule: #34404a;
+  --signal: #79b6e3; --stamp: #ef6a5f; --good: #5cc28a; --warn: #e2a84a; --bad: #ef6a5f; color-scheme: dark; }
+
+body { background: var(--page); color: var(--ink); font-family: var(--ui); font-size: 15px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 40px; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+
+.device { max-width: 900px; margin: 0 auto; background: var(--bezel); border-radius: 22px; padding: 12px; display: grid; gap: 10px;
+  box-shadow: inset 0 1px 0 var(--bezel-hi), 0 18px 40px -20px rgba(0,0,0,.45); }
+
+/* 무대 */
+.stage { position: relative; aspect-ratio: 16 / 10; max-width: 100%; overflow: hidden; border-radius: 12px; background: #05080b; cursor: pointer; user-select: none; }
+.stage > .bg, .stage > .bg svg, .stage canvas, .fx { position: absolute; inset: 0; width: 100%; height: 100%; }
+.bg { transition: opacity .7s ease; }
+.bg.fading { opacity: 0; }
+.slot { position: absolute; bottom: 0; height: 90%; transition: transform .45s cubic-bezier(.2,.8,.2,1), filter .3s, opacity .4s; }
+.slot svg { height: 100%; width: auto; display: block; filter: drop-shadow(0 6px 14px rgba(0,0,0,.35)); }
+.slot.left { left: 3%; } .slot.right { right: 3%; }
+.slot.right svg { transform: scaleX(-1); }
+.slot.out { transform: translateY(14%); opacity: 0; }
+.slot.dim { filter: brightness(.55) saturate(.7); }
+.slot.speak { transform: translateY(-1.5%); }
+.portrait .eyes { transform-box: fill-box; transform-origin: center; animation: blink 4.6s infinite; }
+.portrait .m-open { opacity: 0; }
+.slot.talking .m-open { animation: mouth .22s steps(1) infinite; }
+.slot.talking .m-closed { animation: mouth .22s steps(1) infinite reverse; }
+@keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
+@keyframes mouth { 0% { opacity: 1; } 50% { opacity: 0; } }
+
+.card { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 6px; background: rgba(5,8,11,.72); color: #f3efe4; opacity: 0; pointer-events: none; transition: opacity .5s; }
+.card.on { opacity: 1; }
+.card .t { font-family: var(--mono); font-size: clamp(12px, 2.2vw, 15px); letter-spacing: .2em; color: #e7b75a; }
+.card .p { font-family: var(--display); font-size: clamp(22px, 5vw, 42px); line-height: 1.15; padding-inline: 16px; text-wrap: balance; }
+.card .rule { width: 60px; height: 2px; background: #e7b75a; margin: 6px auto 0; }
+
+.titlebig { position: absolute; left: 0; right: 0; top: 14%; text-align: center; color: #f3efe4; pointer-events: none; transition: opacity .6s; }
+.titlebig h1 { font-family: var(--display); font-weight: 400; font-size: clamp(40px, 11vw, 96px); margin: 0; line-height: 1; letter-spacing: .02em; text-shadow: 0 4px 24px rgba(0,0,0,.6); }
+.titlebig h1 span { color: #e8574a; }
+.titlebig p { font-family: var(--mono); font-size: clamp(11px, 1.8vw, 13px); letter-spacing: .3em; margin: 10px 0 0; color: #cdd5dc; }
+
+.fx { pointer-events: none; }
+.fx.flash { animation: flash .5s ease-out; }
+.fx.red { animation: red 1.4s ease-in-out; }
+@keyframes flash { 0% { background: rgba(255,255,255,.85); } 100% { background: rgba(255,255,255,0); } }
+@keyframes red { 0%, 50%, 100% { background: rgba(200,20,20,0); } 25%, 75% { background: rgba(200,20,20,.35); } }
+.stage.shake { animation: shake .45s; }
+@keyframes shake { 0%,100% { transform: translate(0,0); } 20% { transform: translate(-8px,3px); } 40% { transform: translate(7px,-4px); } 60% { transform: translate(-5px,2px); } 80% { transform: translate(4px,-1px); } }
+
+/* SVG 배경 애니메이션 */
+.blink { animation: lamp 1.2s steps(1) infinite; }
+@keyframes lamp { 50% { opacity: .15; } }
+.flicker { animation: flick 3.2s infinite; }
+@keyframes flick { 0%, 100% { opacity: 1; } 47% { opacity: 1; } 48% { opacity: .55; } 50% { opacity: 1; } 72% { opacity: .8; } }
+.sweep { animation: sweep 7s ease-in-out infinite alternate; }
+@keyframes sweep { from { transform: rotate(-14deg); } to { transform: rotate(16deg); } }
+.swing { animation: swing 3.4s ease-in-out infinite alternate; }
+@keyframes swing { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+.walk { animation: walk 26s linear infinite; }
+@keyframes walk { from { transform: translateX(0); } to { transform: translateX(-520px); } }
+.rise { animation: rise 14s ease-out forwards; }
+@keyframes rise { from { transform: translateY(120px); } to { transform: translateY(0); } }
+.drift { animation: drift 9s ease-in-out infinite alternate; }
+@keyframes drift { from { transform: translate(0, 0) scale(1); } to { transform: translate(40px, -60px) scale(1.15); } }
+
+/* 대사창 */
+.panel { background: var(--panel); border-radius: 12px; padding: 14px clamp(14px, 3vw, 22px) 16px; display: grid; gap: 12px; min-height: 210px; align-content: start; position: relative; }
+.hud { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 520px) { .hud { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 12px; } }
+.g { display: grid; gap: 3px; }
+.g .lab { font-size: 11.5px; color: var(--ink-soft); display: flex; justify-content: space-between; gap: 6px; }
+.g .lab em { font-style: normal; font-family: var(--mono); color: var(--ink); font-variant-numeric: tabular-nums; position: relative; }
+.g .lab em b { position: absolute; right: 0; bottom: 100%; font-weight: 500; font-size: 12px; animation: pop 1.6s ease-out forwards; }
+.g .lab em b.up { color: var(--good); } .g .lab em b.down { color: var(--bad); }
+@keyframes pop { 0% { opacity: 0; transform: translateY(4px); } 15% { opacity: 1; transform: none; } 75% { opacity: 1; } 100% { opacity: 0; transform: translateY(-6px); } }
+.bar { height: 5px; background: var(--rule); position: relative; overflow: hidden; border-radius: 3px; }
+.bar i { position: absolute; inset: 0 auto 0 0; background: var(--ink); transition: width .6s ease; border-radius: 3px; }
+.bar.low i { background: var(--bad); }
+
+.dlg { cursor: pointer; display: grid; gap: 6px; min-height: 120px; align-content: start; }
+.name { justify-self: start; font-weight: 700; font-size: 13.5px; padding: 3px 12px; border-radius: 3px; color: #fff; background: var(--who, var(--ink)); letter-spacing: .02em; }
+.name.narr { background: transparent; color: var(--ink-soft); padding-left: 0; font-weight: 500; font-family: var(--mono); font-size: 12px; letter-spacing: .12em; }
+.text { font-family: var(--body); font-size: clamp(16px, 2.3vw, 18.5px); line-height: 1.75; min-height: 3.5em; max-width: 64ch; }
+.text.narr { color: var(--ink-soft); }
+.text.voice { font-family: var(--mono); font-size: clamp(14px, 2vw, 16px); }
+.next { position: absolute; right: 18px; bottom: 12px; color: var(--signal); font-size: 14px; animation: bob 1s ease-in-out infinite; }
+@keyframes bob { 50% { transform: translateY(3px); } }
+
+.choices { display: grid; gap: 8px; }
+.ask { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; color: var(--stamp); }
+.choice { text-align: left; background: transparent; border: 1px solid var(--rule); border-radius: 6px; padding: 11px 14px; cursor: pointer; display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 1px 10px; transition: border-color .15s, background .15s, transform .15s; animation: slidein .35s ease both; }
+.choice:nth-child(3) { animation-delay: .06s; } .choice:nth-child(4) { animation-delay: .12s; }
+@keyframes slidein { from { opacity: 0; transform: translateY(6px); } }
+.choice:hover { border-color: var(--signal); background: color-mix(in srgb, var(--signal) 8%, transparent); transform: translateX(3px); }
+.choice .k { font-family: var(--mono); color: var(--signal); grid-row: span 2; font-weight: 500; }
+.choice .l { font-weight: 500; }
+.choice .d { font-size: 13px; color: var(--ink-soft); }
+
+.roles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 560px) { .roles { grid-template-columns: 1fr; } }
+.role { text-align: left; background: transparent; border: 1px solid var(--rule); border-radius: 8px; padding: 10px 12px; cursor: pointer; display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 2px 12px; align-items: center; transition: border-color .15s, background .15s; }
+.role:hover { border-color: var(--signal); background: color-mix(in srgb, var(--signal) 6%, transparent); }
+.role .pic { grid-row: span 3; width: 56px; height: 64px; overflow: hidden; border-radius: 6px; background: color-mix(in srgb, var(--ink) 8%, transparent); }
+.role .pic svg { width: 100%; height: auto; margin-top: -2px; }
+.role .org { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); letter-spacing: .04em; }
+.role .nm { font-family: var(--display); font-size: 19px; line-height: 1.2; }
+.role .diff { font-family: var(--mono); font-size: 11px; color: var(--stamp); letter-spacing: .15em; }
+
+.endcard { display: grid; gap: 8px; }
+.tone { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; }
+.tone.good { color: var(--good); } .tone.mixed { color: var(--warn); } .tone.bad { color: var(--bad); }
+.endcard h2 { font-family: var(--display); font-weight: 400; font-size: 30px; margin: 0; line-height: 1.15; }
+.log { font-size: 13px; color: var(--ink-soft); border-top: 1px dashed var(--rule); padding-top: 10px; display: grid; gap: 4px; }
+.log div { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 10px; }
+.log span:first-child { font-family: var(--mono); font-size: 12px; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.btn { border: 1px solid var(--ink); background: var(--ink); color: var(--panel); padding: 9px 16px; border-radius: 6px; cursor: pointer; font-weight: 500; }
+.btn.ghost { background: transparent; color: var(--ink); }
+
+.controls { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; padding: 0 4px; }
+.controls .grp { display: flex; gap: 6px; flex-wrap: wrap; }
+.ctl { background: var(--bezel-hi); color: #d7dde2; border: 0; border-radius: 999px; padding: 5px 13px; font-size: 12.5px; cursor: pointer; }
+.ctl[aria-pressed="true"] { background: #e7b75a; color: #1d232a; }
+.ctl-meta { font-family: var(--mono); font-size: 11.5px; color: #8e9aa4; letter-spacing: .08em; }
+.foot { max-width: 900px; margin: 14px auto 0; font-size: 12px; color: var(--ink-soft); text-align: center; }
+
+@media (prefers-reduced-motion: reduce) {
+  .blink, .flicker, .sweep, .swing, .walk, .rise, .drift, .portrait .eyes, .next, .choice { animation: none !important; }
+  .stage.shake { animation: none; }
+}
+</style>
+
+<div class="device">
+  <div class="stage" id="stage" role="img" aria-label="장면">
+    <div class="bg" id="bg"></div>
+    <canvas id="particles"></canvas>
+    <div class="slot left out" id="slotL"></div>
+    <div class="slot right out" id="slotR"></div>
+    <div class="titlebig" id="titlebig"><h1>블랙아웃 <span>72</span></h1><p>한반도 급변사태 시뮬레이션</p></div>
+    <div class="fx" id="fx"></div>
+    <div class="card" id="card"><div class="t" id="cardT"></div><div class="p" id="cardP"></div><div class="rule"></div></div>
+  </div>
+  <div class="panel" id="panel" aria-live="polite"></div>
+  <div class="controls">
+    <span class="ctl-meta" id="meta">PROLOGUE</span>
+    <div class="grp">
+      <button class="ctl" id="bAuto" aria-pressed="false">자동 진행</button>
+      <button class="ctl" id="bFast" aria-pressed="false">빠른 글자</button>
+      <button class="ctl" id="bSound" aria-pressed="false">효과음</button>
+      <button class="ctl" id="bHome">처음으로</button>
+    </div>
+  </div>
+</div>
+<p class="foot">가상의 시나리오입니다. 등장인물은 모두 허구이며 실존 인물·기관의 실제 입장이나 계획과 무관합니다. 화면이나 대사창을 누르거나 Space·Enter로 대사를 넘깁니다.</p>
+
+<script>
+(function () {
+  const S = window.SCENARIO;
+  const $ = id => document.getElementById(id);
+  const stage = $('stage'), bgEl = $('bg'), panel = $('panel'), slotL = $('slotL'), slotR = $('slotR');
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ───────── 초상화 ───────── */
+  function portrait(look, mood) {
+    const L = Object.assign({ skin: '#e9c7a3', hair: '#1e1a17', hairStyle: 'short', outfit: 'suit', color: '#2b3644', accent: '#b0333a', scale: 1 }, look || {});
+    const dark = shade(L.color, -0.28), skinD = shade(L.skin, -0.12);
+    let back = '', body = '', hair = '', hat = '';
+    // 몸
+    body += `<path d="M8 300 C10 240 40 214 100 208 C160 214 190 240 192 300 Z" fill="${L.color}"/>`;
+    body += `<rect x="83" y="160" width="34" height="54" rx="10" fill="${L.skin}"/><path d="M83 190 Q100 204 117 190 V200 Q100 214 83 200Z" fill="${skinD}"/>`;
+    if (L.outfit === 'suit') body += `<path d="M78 210 L100 262 L122 210 Z" fill="#f3f1ea"/><path d="M96 214 H104 L107 252 L100 266 L93 252 Z" fill="${L.accent}"/><path d="M60 222 L100 300 L78 210 Z M140 222 L100 300 L122 210Z" fill="${dark}"/>`;
+    if (L.outfit === 'military') body += `<path d="M70 206 L100 236 L130 206 L132 222 L100 252 L68 222 Z" fill="${dark}"/><rect x="26" y="232" width="44" height="11" rx="3" fill="${L.accent}" transform="rotate(14 48 237)"/><rect x="130" y="232" width="44" height="11" rx="3" fill="${L.accent}" transform="rotate(-14 152 237)"/><circle cx="100" cy="262" r="3.5" fill="${L.accent}"/><circle cx="100" cy="284" r="3.5" fill="${L.accent}"/><rect x="58" y="262" width="22" height="6" fill="#b5343a"/><rect x="58" y="270" width="22" height="6" fill="#d0b25a"/>`;
+    if (L.outfit === 'coat') body += `<path d="M72 208 L100 250 L88 300 L60 300 L50 230Z M128 208 L100 250 L112 300 L140 300 L150 230Z" fill="${dark}"/><circle cx="100" cy="268" r="3.5" fill="${dark}"/><circle cx="100" cy="288" r="3.5" fill="${dark}"/>`;
+    if (L.outfit === 'school') body += `<path d="M80 208 L100 232 L120 208 L128 218 L100 244 L72 218Z" fill="#dcdad2"/><path d="M84 216 L100 236 L116 216 L112 236 L100 270 L88 236Z" fill="${L.accent}"/><circle cx="100" cy="238" r="6" fill="${shade(L.accent, -0.2)}"/>`;
+    if (L.outfit === 'cardigan') body += `<path d="M80 208 L100 258 L120 208Z" fill="${L.accent}"/><path d="M80 208 L100 300 M120 208 L100 300" stroke="${dark}" stroke-width="5"/><circle cx="104" cy="272" r="3" fill="${dark}"/><circle cx="106" cy="290" r="3" fill="${dark}"/>`;
+    // 뒷머리
+    if (L.hairStyle === 'bob') back = `<path d="M50 110 C46 50 154 50 150 110 L154 178 Q130 186 122 170 L78 170 Q70 186 46 178 Z" fill="${L.hair}"/>`;
+    if (L.hairStyle === 'pigtails') back = `<path d="M54 120 C40 140 34 170 44 196 Q60 176 60 140Z M146 120 C160 140 166 170 156 196 Q140 176 140 140Z" fill="${L.hair}"/><circle cx="52" cy="122" r="7" fill="${L.accent}"/><circle cx="148" cy="122" r="7" fill="${L.accent}"/>`;
+    if (L.hairStyle === 'bun') back = `<circle cx="100" cy="50" r="22" fill="${L.hair}"/>`;
+    // 앞머리
+    const H = L.hair;
+    if (L.hairStyle === 'short') hair = `<path d="M54 104 C50 52 150 46 148 104 C140 84 124 74 100 74 C78 74 62 84 54 104Z" fill="${H}"/>`;
+    if (L.hairStyle === 'side') hair = `<path d="M54 108 C46 50 152 44 148 104 C146 92 140 84 132 80 C112 76 82 90 62 86 C58 92 56 100 54 108Z" fill="${H}"/><path d="M88 66 Q110 70 136 84" stroke="${shade(H, 0.15)}" stroke-width="3" fill="none"/>`;
+    if (L.hairStyle === 'buzz') hair = `<path d="M56 98 C56 58 144 54 146 98 C134 82 116 76 100 76 C84 76 66 82 56 98Z" fill="${H}" opacity=".92"/>`;
+    if (L.hairStyle === 'bob') hair = `<path d="M54 112 C50 56 150 56 146 112 C140 92 126 84 112 82 C100 92 76 96 60 96 C57 102 55 106 54 112Z" fill="${H}"/>`;
+    if (L.hairStyle === 'pigtails') hair = `<path d="M54 110 C50 54 150 54 146 110 C136 92 118 86 100 92 C82 86 64 92 54 110Z" fill="${H}"/><path d="M100 64 V92" stroke="${shade(H, 0.25)}" stroke-width="2"/>`;
+    if (L.hairStyle === 'bun') hair = `<path d="M54 108 C50 58 150 58 146 108 C138 86 120 80 100 80 C80 80 62 86 54 108Z" fill="${H}"/>`;
+    if (L.hairStyle === 'curly') hair = `<g fill="${H}"><circle cx="62" cy="96" r="14"/><circle cx="74" cy="76" r="16"/><circle cx="96" cy="66" r="17"/><circle cx="120" cy="70" r="16"/><circle cx="138" cy="86" r="15"/><circle cx="144" cy="104" r="11"/><circle cx="56" cy="114" r="9"/></g>`;
+    // 모자
+    if (L.hat === 'peak') hat = `<path d="M40 82 C40 36 160 36 160 82 Z" fill="${L.hatColor || L.color}"/><rect x="50" y="76" width="100" height="14" fill="${L.band || dark}"/><path d="M52 90 Q100 112 150 90 L150 94 Q100 120 50 94Z" fill="#141414"/><circle cx="100" cy="60" r="8" fill="${L.accent}"/>`;
+    if (L.hat === 'field') hat = `<path d="M52 92 C50 50 150 50 148 92 Z" fill="${L.hatColor || L.color}"/><path d="M52 92 Q100 104 148 92" stroke="${dark}" stroke-width="5" fill="none"/><path d="M96 66 l4 -8 4 8 -6 -4 h8z" fill="${L.accent}"/>`;
+    if (L.hat === 'flat') hat = `<path d="M50 92 C48 58 152 54 154 86 Q160 94 150 98 Q100 104 50 96Z" fill="${L.hatColor || '#3a3530'}"/><path d="M60 90 Q100 98 150 90" stroke="${shade(L.hatColor || '#3a3530', 0.15)}" stroke-width="2" fill="none"/>`;
+    // 표정
+    const brows = { neutral: ['M70 104 L92 103', 'M108 103 L130 104'], stern: ['M70 100 L92 107', 'M108 107 L130 100'], worried: ['M70 106 L92 99', 'M108 99 L130 106'], calm: ['M70 103 Q81 99 92 103', 'M108 103 Q119 99 130 103'] }[mood || 'neutral'] || ['M70 104 L92 103', 'M108 103 L130 104'];
+    const mouthC = { stern: 'M88 150 L112 150', worried: 'M88 152 Q100 146 112 152', calm: 'M88 148 Q100 156 112 148' }[mood] || 'M89 149 Q100 153 111 149';
+    const age = L.age ? `<path d="M76 92 Q100 88 124 92" stroke="${skinD}" stroke-width="1.6" fill="none"/><path d="M78 136 Q80 146 84 150 M122 136 Q120 146 116 150" stroke="${skinD}" stroke-width="1.6" fill="none"/>` : '';
+    const glasses = L.glasses ? `<g fill="none" stroke="#2a2a2a" stroke-width="2.6"><rect x="66" y="108" width="28" height="20" rx="6"/><rect x="106" y="108" width="28" height="20" rx="6"/><path d="M94 116 Q100 112 106 116"/></g>` : '';
+    const s = L.scale, tf = s !== 1 ? `transform="translate(${100 * (1 - s)} ${300 * (1 - s)}) scale(${s})"` : '';
+    return `<svg class="portrait" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg"><g ${tf}>
+      ${back}${body}
+      <ellipse cx="54" cy="122" rx="8" ry="12" fill="${skinD}"/><ellipse cx="146" cy="122" rx="8" ry="12" fill="${skinD}"/>
+      <ellipse cx="100" cy="114" rx="47" ry="56" fill="${L.skin}"/>
+      <ellipse cx="76" cy="136" rx="9" ry="5" fill="#d9786a" opacity=".22"/><ellipse cx="124" cy="136" rx="9" ry="5" fill="#d9786a" opacity=".22"/>
+      ${age}
+      <g stroke="${shade(L.hair, -0.1)}" stroke-width="3.6" stroke-linecap="round" fill="none"><path d="${brows[0]}"/><path d="${brows[1]}"/></g>
+      <g class="eyes" fill="#1a1715"><ellipse cx="81" cy="117" rx="4.6" ry="6"/><ellipse cx="119" cy="117" rx="4.6" ry="6"/></g>
+      <path d="M100 120 Q96 134 100 138 Q103 139 105 137" stroke="${skinD}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <path class="m-closed" d="${mouthC}" stroke="#7a3a34" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      <ellipse class="m-open" cx="100" cy="150" rx="8" ry="5.5" fill="#6a2a28"/>
+      ${glasses}${hair}${hat}
+    </g></svg>`;
+  }
+  function shade(hex, amt) {
+    const n = parseInt(hex.slice(1), 16); let r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+    const f = v => Math.max(0, Math.min(255, Math.round(amt < 0 ? v * (1 + amt) : v + (255 - v) * amt)));
+    return '#' + [f(r), f(g), f(b)].map(v => v.toString(16).padStart(2, '0')).join('');
+  }
+
+  /* ───────── 배경 ───────── */
+  function rng(seed) { return () => (seed = (seed * 9301 + 49297) % 233280) / 233280; }
+  function stars(n, seed, h) { const r = rng(seed); let s = ''; for (let i = 0; i < n; i++) s += `<circle cx="${(r() * 1600) | 0}" cy="${(r() * h) | 0}" r="${(r() * 1.8 + .4).toFixed(1)}" fill="#fff" opacity="${(r() * .6 + .2).toFixed(2)}"/>`; return s; }
+  function windows(x, y, w, h, cols, rows, seed, on, off) { const r = rng(seed); let s = ''; const cw = w / cols, rh = h / rows; for (let i = 0; i < cols; i++) for (let j = 0; j < rows; j++) s += `<rect x="${(x + i * cw + cw * .25) | 0}" y="${(y + j * rh + rh * .25) | 0}" width="${(cw * .5) | 0}" height="${(rh * .5) | 0}" fill="${r() > .55 ? on : off}"/>`; return s; }
+  const sky = (id, stops) => `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">${stops.map((c, i) => `<stop offset="${i / (stops.length - 1)}" stop-color="${c}"/>`).join('')}</linearGradient>`;
+
+  const BG = {
+    sitroom: { p: 'none', svg: () => `<defs>${sky('a', ['#0b1522', '#18263a'])}<radialGradient id="g" cx=".5" cy=".35" r=".6"><stop offset="0" stop-color="#2f7fae" stop-opacity=".35"/><stop offset="1" stop-color="#2f7fae" stop-opacity="0"/></radialGradient></defs>
+      <rect width="1600" height="1000" fill="url(#a)"/>${[0, 1, 2, 3, 4, 5, 6, 7].map(i => `<rect x="${i * 200 + 4}" y="0" width="192" height="700" fill="#122033"/>`).join('')}
+      <rect width="1600" height="1000" fill="url(#g)"/>
+      <rect x="360" y="100" width="880" height="480" rx="8" fill="#071c2a" stroke="#2f6b8f" stroke-width="6"/>
+      <g stroke="#123b55" stroke-width="2">${[0, 1, 2, 3, 4, 5, 6, 7].map(i => `<line x1="${400 + i * 110}" y1="106" x2="${400 + i * 110}" y2="574"/>`).join('')}${[0, 1, 2, 3].map(i => `<line x1="366" y1="${160 + i * 110}" x2="1234" y2="${160 + i * 110}"/>`).join('')}</g>
+      <path d="M560 106 L1100 106 L1060 200 L940 180 L880 210 L760 190 L640 220 L560 180Z" fill="#1d4d6b"/>
+      <path d="M760 190 L840 176 L900 206 L884 262 L904 332 L876 420 L836 516 L786 556 L744 538 L724 470 L704 402 L732 336 L702 286 L722 228 Z" fill="#3a8fbf"/>
+      <path d="M708 328 L900 318" stroke="#e8574a" stroke-width="4" stroke-dasharray="10 8"/>
+      <circle class="blink" cx="738" cy="296" r="10" fill="#e8574a"/><circle cx="772" cy="350" r="7" fill="#e7b75a"/>
+      <g class="flicker"><rect x="80" y="170" width="230" height="150" rx="6" fill="#0a2333" stroke="#2f6b8f" stroke-width="4"/>${[0, 1, 2, 3, 4].map(i => `<rect x="100" y="${192 + i * 24}" width="${190 - i * 28}" height="10" fill="#3a8fbf" opacity=".7"/>`).join('')}</g>
+      <g class="flicker" style="animation-delay:1.3s"><rect x="1290" y="170" width="230" height="150" rx="6" fill="#0a2333" stroke="#2f6b8f" stroke-width="4"/><path d="M1310 290 L1350 250 L1390 270 L1430 210 L1470 240 L1500 200" stroke="#e7b75a" stroke-width="5" fill="none"/></g>
+      <rect y="700" width="1600" height="300" fill="#0a121c"/>
+      <path d="M220 1000 L500 760 L1100 760 L1380 1000Z" fill="#1c2a3b"/><path d="M500 760 L1100 760" stroke="#35506b" stroke-width="4"/>
+      ${[0, 1, 2, 3].map(i => `<rect x="${430 - i * 70}" y="${790 + i * 52}" width="70" height="90" rx="14" fill="#0f1823"/><rect x="${1100 + i * 70}" y="${790 + i * 52}" width="70" height="90" rx="14" fill="#0f1823"/>`).join('')}` },
+
+    dmz: { p: 'snow', svg: () => `<defs>${sky('a', ['#070b18', '#1a2540'])}<linearGradient id="beam" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#fff6d8" stop-opacity=".55"/><stop offset="1" stop-color="#fff6d8" stop-opacity="0"/></linearGradient></defs>
+      <rect width="1600" height="1000" fill="url(#a)"/>${stars(120, 7, 520)}
+      <circle cx="1420" cy="150" r="70" fill="#e9e5d2" opacity=".12"/><circle cx="1420" cy="150" r="44" fill="#ece8d6"/>
+      <path d="M0 620 Q220 500 440 590 T880 560 T1320 540 T1600 590 V1000 H0Z" fill="#18213a"/>
+      <path d="M0 700 Q300 620 620 690 T1240 660 T1600 700 V1000 H0Z" fill="#111a2c"/>
+      <g class="sweep" style="transform-origin:1220px 488px"><path d="M1220 488 L260 360 L290 470 Z" fill="url(#beam)"/></g>
+      <g fill="#0b111c"><rect x="1182" y="500" width="10" height="320"/><rect x="1250" y="500" width="10" height="320"/><path d="M1186 600 L1256 700 M1256 600 L1186 700" stroke="#0b111c" stroke-width="7"/><rect x="1150" y="440" width="142" height="66"/><path d="M1140 440 L1221 400 L1302 440Z"/></g>
+      <circle cx="1221" cy="488" r="9" fill="#fff6d8"/>
+      <path d="M0 800 Q400 760 800 790 T1600 780 V1000 H0Z" fill="#090e17"/>
+      <g stroke="#2a3446" stroke-width="3">${Array.from({ length: 21 }, (_, i) => `<line x1="${i * 80}" y1="740" x2="${i * 80}" y2="860"/>`).join('')}<line x1="0" y1="760" x2="1600" y2="760"/><line x1="0" y1="790" x2="1600" y2="790"/><line x1="0" y1="820" x2="1600" y2="820"/></g>` },
+
+    bunker: { p: 'dust', svg: () => `<defs><radialGradient id="l" cx=".5" cy="0" r="1"><stop offset="0" stop-color="#ffd98a" stop-opacity=".45"/><stop offset="1" stop-color="#ffd98a" stop-opacity="0"/></radialGradient></defs>
+      <rect width="1600" height="1000" fill="#34332c"/>
+      <g stroke="#2a2924" stroke-width="4">${Array.from({ length: 8 }, (_, j) => `<line x1="0" y1="${j * 90}" x2="1600" y2="${j * 90}"/>` + Array.from({ length: 9 }, (_, i) => `<line x1="${i * 200 + (j % 2) * 100}" y1="${j * 90}" x2="${i * 200 + (j % 2) * 100}" y2="${j * 90 + 90}"/>`).join('')).join('')}</g>
+      <rect x="1220" y="120" width="300" height="200" fill="#b9ac86"/><path d="M1240 150 H1500 M1240 190 H1460 M1240 230 H1480 M1260 270 L1300 210 L1360 250 L1420 180" stroke="#6b5f45" stroke-width="4" fill="none"/>
+      <g class="swing" style="transform-origin:800px 0"><line x1="800" y1="0" x2="800" y2="190" stroke="#1a1916" stroke-width="5"/><path d="M748 190 L852 190 L834 160 L766 160Z" fill="#2c4a33"/><circle cx="800" cy="196" r="12" fill="#ffe9b0"/><path d="M752 196 L460 1000 L1140 1000 L848 196Z" fill="url(#l)"/></g>
+      <rect y="720" width="1600" height="280" fill="#24231e"/>
+      <path d="M340 660 L1260 660 L1320 750 L280 750Z" fill="#4a3c2b"/><rect x="320" y="750" width="24" height="200" fill="#3a2f22"/><rect x="1256" y="750" width="24" height="200" fill="#3a2f22"/>
+      <path d="M520 668 L930 668 L950 726 L500 726Z" fill="#cbbd92"/><path d="M560 690 Q640 676 700 700 T880 690" stroke="#7a3b2c" stroke-width="4" fill="none"/><path d="M620 668 V726 M760 668 V726" stroke="#a89a72" stroke-width="2"/>
+      <rect x="1000" y="580" width="190" height="90" rx="6" fill="#2d3a2b"/><circle cx="1040" cy="625" r="18" fill="#1b2419"/><circle cx="1090" cy="625" r="18" fill="#1b2419"/><circle class="blink" cx="1150" cy="604" r="6" fill="#e8574a"/><circle class="blink" style="animation-delay:.6s" cx="1150" cy="630" r="6" fill="#7ad38a"/>
+      <g fill="#6b6249">${[0, 1, 2, 3].map(i => `<ellipse cx="${60 + i * 90}" cy="900" rx="52" ry="30"/><ellipse cx="${100 + i * 90}" cy="850" rx="52" ry="30"/>`).join('')}</g>` },
+
+    river: { p: 'snow', svg: () => `<defs>${sky('a', ['#22304c', '#6d5e78', '#d49a77'])}</defs>
+      <rect width="1600" height="1000" fill="url(#a)"/><circle cx="1220" cy="560" r="160" fill="#f2c08f" opacity=".25"/>
+      <path d="M0 560 Q300 500 620 548 T1240 520 T1600 550 V640 H0Z" fill="#2c2f46"/>
+      <rect y="610" width="1600" height="220" fill="#c7d5e2"/><g stroke="#9cb0c4" stroke-width="3" fill="none"><path d="M120 660 L260 690 L330 680"/><path d="M700 640 L820 700 L960 690"/><path d="M1200 700 L1320 650 L1460 680"/><path d="M400 770 L560 740"/></g>
+      <g fill="#2a2c3b"><rect x="0" y="540" width="720" height="22"/>${[0, 1, 2, 3, 4, 5, 6].map(i => `<path d="M${i * 100} 540 L${i * 100 + 50} 480 L${i * 100 + 100} 540" stroke="#2a2c3b" stroke-width="8" fill="none"/>`).join('')}<rect x="0" y="476" width="700" height="8"/><path d="M700 540 L720 562 L740 548 L730 530Z"/><rect x="180" y="562" width="34" height="100"/><rect x="480" y="562" width="34" height="100"/></g>
+      <g class="walk">${[0, 1, 2, 3, 4, 5, 6, 7, 8].map(i => `<g transform="translate(${900 + i * 70} ${690 + (i % 3) * 18})" fill="#1f2230"><circle cx="0" cy="-30" r="7"/><path d="M-8 -22 H8 L10 6 H-10Z"/></g>`).join('')}</g>
+      <path d="M0 820 Q400 790 820 820 T1600 810 V1000 H0Z" fill="#e9eef3"/><path d="M0 900 Q500 880 1000 910 T1600 900 V1000 H0Z" fill="#d7dee6"/>
+      <g stroke="#3a3640" stroke-width="5">${[0, 1, 2, 3, 4, 5].map(i => `<line x1="${1000 + i * 100}" y1="800" x2="${1000 + i * 100}" y2="880"/>`).join('')}<line x1="1000" y1="820" x2="1600" y2="820"/><line x1="1000" y1="850" x2="1600" y2="850"/></g>` },
+
+    office: { p: 'none', svg: () => `<defs>${sky('a', ['#0c1428', '#1e2b48'])}<radialGradient id="lamp" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffd98a" stop-opacity=".5"/><stop offset="1" stop-color="#ffd98a" stop-opacity="0"/></radialGradient></defs>
+      <rect width="1600" height="1000" fill="#3b3833"/><rect x="860" y="100" width="640" height="500" fill="url(#a)"/>
+      ${[0, 1, 2, 3, 4, 5, 6].map(i => { const h = 140 + ((i * 53) % 220); return `<rect x="${880 + i * 90}" y="${600 - h}" width="80" height="${h}" fill="#141b2c"/>` + windows(880 + i * 90, 600 - h + 10, 80, h - 20, 4, Math.max(3, h / 30 | 0), i + 3, '#e9c46a', '#1c2438'); }).join('')}
+      <g stroke="#2a2722" stroke-width="10" fill="none"><rect x="860" y="100" width="640" height="500"/><line x1="1180" y1="100" x2="1180" y2="600"/></g>
+      ${Array.from({ length: 10 }, (_, i) => `<line x1="860" y1="${110 + i * 16}" x2="1500" y2="${110 + i * 16}" stroke="#2a2722" stroke-width="5" opacity=".6"/>`).join('')}
+      <circle cx="330" cy="560" r="260" fill="url(#lamp)"/>
+      <rect y="700" width="1600" height="300" fill="#26201c"/><rect y="700" width="1600" height="16" fill="#3f342c"/>
+      <path d="M300 700 L330 590 L360 700Z" fill="#1d1a17"/><path d="M270 590 Q330 540 390 590Z" fill="#2c5a3a"/>
+      <rect x="500" y="660" width="120" height="44" rx="8" fill="#1a1a1a"/><rect x="510" y="646" width="100" height="20" rx="10" fill="#222"/><circle class="blink" cx="600" cy="680" r="5" fill="#e8574a"/>
+      <rect x="700" y="672" width="160" height="30" fill="#efeae0" transform="rotate(-4 780 690)"/><rect x="720" y="664" width="160" height="30" fill="#f6f2ea" transform="rotate(3 800 680)"/>` },
+
+    apartment: { p: 'dust', svg: () => `<rect width="1600" height="1000" fill="#b6c2a6"/><rect y="560" width="1600" height="200" fill="#8e9c7f"/>
+      <rect x="980" y="130" width="460" height="380" fill="#c7cdd2"/>
+      ${[0, 1, 2].map(i => `<rect x="${1000 + i * 150}" y="${220 + i * 30}" width="130" height="${290 - i * 30}" fill="#9aa3aa"/>` + windows(1000 + i * 150, 230 + i * 30, 130, 270 - i * 30, 4, 7, i + 11, '#e7e1c8', '#7e868e')).join('')}
+      <g stroke="#6b5a44" stroke-width="14" fill="none"><rect x="980" y="130" width="460" height="380"/><line x1="1210" y1="130" x2="1210" y2="510"/></g>
+      <path d="M940 110 Q980 300 950 540 L900 540 L900 110Z" fill="#8a4f3f"/><path d="M1480 110 Q1440 300 1470 540 L1520 540 L1520 110Z" fill="#8a4f3f"/>
+      <g>${[300, 560].map(x => `<rect x="${x}" y="100" width="190" height="230" fill="#b8913d"/><rect x="${x + 14}" y="114" width="162" height="202" fill="#ddd6c2"/>`).join('')}</g>
+      <rect y="760" width="1600" height="240" fill="#76654f"/><path d="M0 760 H1600" stroke="#5c4e3d" stroke-width="6"/>
+      <rect x="560" y="700" width="420" height="30" fill="#5a4632"/><rect x="590" y="730" width="20" height="120" fill="#4a3a29"/><rect x="930" y="730" width="20" height="120" fill="#4a3a29"/>
+      <rect x="640" y="620" width="170" height="80" rx="6" fill="#4a3b2c"/><circle cx="690" cy="660" r="22" fill="#2a2119"/><rect x="730" y="640" width="60" height="10" fill="#c8b07a"/><circle class="blink" cx="790" cy="680" r="4" fill="#e8574a"/>` },
+
+    market: { p: 'dust', svg: () => `<defs>${sky('a', ['#a8afb6', '#c6c9c9'])}</defs><rect width="1600" height="1000" fill="url(#a)"/>
+      ${[0, 1, 2, 3, 4].map(i => `<rect x="${i * 340}" y="${240 + (i % 2) * 40}" width="300" height="400" fill="#8b9198"/>` + windows(i * 340, 260 + (i % 2) * 40, 300, 340, 6, 8, i + 21, '#a9aeb3', '#767c83')).join('')}
+      ${[['#4f6d8a', 60], ['#a8623a', 420], ['#6a7f4f', 780], ['#7a5a7a', 1140]].map(([c, x]) => `<path d="M${x} 520 L${x + 360} 520 L${x + 330} 440 L${x + 30} 440Z" fill="${c}"/><rect x="${x + 30}" y="620" width="300" height="20" fill="#5a4a3a"/><rect x="${x + 40}" y="520" width="8" height="120" fill="#3a3028"/><rect x="${x + 312}" y="520" width="8" height="120" fill="#3a3028"/>`).join('')}
+      <g fill="#d9cfb4">${[0, 1, 2, 3, 4, 5, 6].map(i => `<ellipse cx="${120 + i * 50}" cy="604" rx="26" ry="22"/>`).join('')}</g>
+      <rect y="700" width="1600" height="300" fill="#7b766c"/>
+      <g fill="#2c2b2a">${Array.from({ length: 34 }, (_, i) => { const x = (i * 47) % 1600, y = 680 + (i * 37) % 120; return `<circle cx="${x}" cy="${y}" r="20"/><path d="M${x - 28} ${y + 18} Q${x} ${y + 6} ${x + 28} ${y + 18} L${x + 34} ${y + 140} H${x - 34}Z"/>`; }).join('')}</g>` },
+
+    checkpoint: { p: 'dust', svg: () => `<defs>${sky('a', ['#2a2442', '#7b4a5a', '#c9714f'])}<radialGradient id="hl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff2c4" stop-opacity=".8"/><stop offset="1" stop-color="#fff2c4" stop-opacity="0"/></radialGradient></defs>
+      <rect width="1600" height="1000" fill="url(#a)"/>
+      <path d="M0 600 L240 420 L460 560 L720 380 L980 560 L1240 430 L1600 600 V1000 H0Z" fill="#2a2630"/>
+      <rect y="600" width="1600" height="400" fill="#3e3a36"/><path d="M380 1000 L760 600 L840 600 L1220 1000Z" fill="#4b4744"/><path d="M800 620 V1000" stroke="#c9c2a8" stroke-width="6" stroke-dasharray="30 30"/>
+      <rect x="360" y="500" width="170" height="170" fill="#5a5446"/><path d="M340 500 L445 450 L550 500Z" fill="#3a352c"/><rect x="390" y="540" width="70" height="50" fill="#f2c96a"/>
+      <rect x="560" y="610" width="22" height="100" fill="#d8d4c8"/>
+      <g transform="rotate(-3 571 630)">${Array.from({ length: 8 }, (_, i) => `<rect x="${571 + i * 70}" y="618" width="70" height="20" fill="${i % 2 ? '#e9e4d6' : '#b3261e'}"/>`).join('')}</g>
+      <path d="M1080 540 H1300 L1360 600 V700 H1040 V600 H1080Z" fill="#1d1a22"/><rect x="1080" y="470" width="200" height="120" fill="#1d1a22"/><circle cx="1110" cy="710" r="34" fill="#121015"/><circle cx="1300" cy="710" r="34" fill="#121015"/>
+      <circle cx="1052" cy="640" r="70" fill="url(#hl)"/><circle cx="1052" cy="640" r="12" fill="#fff6d8"/>` },
+
+    mountain: { p: 'snow', svg: () => `<defs>${sky('a', ['#070d1a', '#1b2a42'])}</defs><rect width="1600" height="1000" fill="url(#a)"/>${stars(90, 13, 400)}
+      <circle cx="1240" cy="180" r="56" fill="#e8e6da"/><circle cx="1240" cy="180" r="110" fill="#e8e6da" opacity=".08"/>
+      <path d="M0 560 L300 300 L560 520 L820 260 L1140 540 L1400 340 L1600 500 V1000 H0Z" fill="#1c2738"/>
+      ${[[0, 640, 70, '#141d2b'], [30, 760, 90, '#0e1520'], [0, 900, 120, '#0a0f17']].map(([o, y, s, c]) => Array.from({ length: 1700 / s | 0 }, (_, i) => `<path d="M${o + i * s} ${y} L${o + i * s + s / 2} ${y - s * 1.9} L${o + i * s + s} ${y}Z" fill="${c}"/>`).join('') + `<rect y="${y - 2}" width="1600" height="${1000 - y + 2}" fill="${c}"/>`).join('')}
+      <path d="M700 1000 Q760 900 740 840 Q720 790 800 760" stroke="#5a6678" stroke-width="22" fill="none" opacity=".6"/>` },
+
+    tv: { p: 'none', svg: () => `<defs><radialGradient id="glow" cx=".5" cy=".45" r=".5"><stop offset="0" stop-color="#9fb6cc" stop-opacity=".45"/><stop offset="1" stop-color="#9fb6cc" stop-opacity="0"/></radialGradient>
+      <filter id="st"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="1" seed="1"><animate attributeName="seed" values="1;2;3;4;5;6;7;8" dur=".5s" repeatCount="indefinite"/></feTurbulence><feColorMatrix type="saturate" values="0"/></filter></defs>
+      <rect width="1600" height="1000" fill="#0d1014"/><circle cx="800" cy="420" r="640" fill="url(#glow)"/>
+      <rect x="480" y="190" width="640" height="470" rx="26" fill="#2a2520"/><rect x="520" y="226" width="560" height="380" rx="14" fill="#8ea3b6"/>
+      <g class="flicker"><rect x="520" y="226" width="560" height="380" rx="14" filter="url(#st)" opacity=".35"/><rect x="700" y="300" width="200" height="300" rx="90" fill="#3c4a34" opacity=".7"/><circle cx="800" cy="300" r="48" fill="#c9b49a" opacity=".7"/></g>
+      <rect x="520" y="540" width="560" height="40" fill="#11161c" opacity=".7"/><rect x="540" y="552" width="300" height="14" fill="#e7b75a" opacity=".85"/>
+      <rect x="440" y="660" width="720" height="40" fill="#221d18"/><rect y="760" width="1600" height="240" fill="#14110e"/>
+      <path d="M80 0 Q140 400 90 760 H0 V0Z M1520 0 Q1460 400 1510 760 H1600 V0Z" fill="#2b1d1a"/>` },
+
+    aid: { p: 'none', svg: () => `<defs>${sky('a', ['#9fc0d8', '#dfe8ee'])}</defs><rect width="1600" height="1000" fill="url(#a)"/>
+      <path d="M0 600 Q400 540 800 580 T1600 560 V1000 H0Z" fill="#9aa486"/><rect y="640" width="1600" height="360" fill="#bcae8f"/>
+      ${[[120, 1], [520, 1.2], [980, 1]].map(([x, s]) => `<g transform="translate(${x} ${640 - 220 * s}) scale(${s})"><path d="M0 220 L60 40 L340 40 L400 220Z" fill="#f2f0ea"/><path d="M60 40 L200 0 L340 40Z" fill="#dcd9d0"/><rect x="160" y="110" width="80" height="110" fill="#5a6470"/><rect x="170" y="70" width="60" height="22" fill="#2f6b8f"/></g>`).join('')}
+      <g>${[0, 1, 2, 3, 4, 5].map(i => `<rect x="${1380 + (i % 3) * 64}" y="${700 - (i / 3 | 0) * 54}" width="60" height="50" fill="#c9a86a" stroke="#8a6f3e" stroke-width="3"/>`).join('')}</g>
+      <text x="1418" y="600" font-family="IBM Plex Sans KR, sans-serif" font-size="28" fill="#2f6b8f" font-weight="700">구호 식량</text>
+      <g fill="#3a3a3e">${Array.from({ length: 12 }, (_, i) => `<g transform="translate(${400 + i * 70} ${780 + (i % 2) * 10})"><circle cx="0" cy="-60" r="16"/><path d="M-20 -42 H20 L24 40 H-24Z"/></g>`).join('')}</g>` },
+
+    conference: { p: 'dust', svg: () => `<defs><linearGradient id="w" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff7e2"/><stop offset="1" stop-color="#e6edf2"/></linearGradient></defs>
+      <rect width="1600" height="1000" fill="#d8d2c4"/>${[0, 1, 2, 3, 4, 5, 6, 7].map(i => `<rect x="${i * 200 + 6}" y="0" width="188" height="620" fill="#e2ddd1"/>`).join('')}
+      <rect x="560" y="80" width="480" height="380" fill="url(#w)"/><path d="M800 80 V460 M560 270 H1040" stroke="#b9b2a2" stroke-width="10"/>
+      <path d="M560 460 L200 1000 H1400 L1040 460Z" fill="#fff8e6" opacity=".25"/>
+      <rect y="620" width="1600" height="380" fill="#8a7b66"/>
+      <path d="M260 1000 L640 680 H960 L1340 1000Z" fill="#5a4330"/><path d="M640 680 H960" stroke="#7a5d43" stroke-width="6"/>
+      ${[0, 1, 2].map(i => `<rect x="${560 - i * 90}" y="${720 + i * 90}" width="60" height="110" rx="10" fill="#2e3a4a"/><rect x="${980 + i * 90}" y="${720 + i * 90}" width="60" height="110" rx="10" fill="#2e3a4a"/><path d="M${700 - i * 70} ${700 + i * 90} l-30 -40" stroke="#222" stroke-width="5"/><path d="M${900 + i * 70} ${700 + i * 90} l30 -40" stroke="#222" stroke-width="5"/>`).join('')}` },
+
+    dawn: { p: 'none', svg: () => `<defs>${sky('a', ['#22345a', '#c7826a', '#f4d39a'])}</defs><rect width="1600" height="1000" fill="url(#a)"/>
+      <g class="rise"><circle cx="800" cy="600" r="210" fill="#ffd9a0" opacity=".35"/><circle cx="800" cy="600" r="110" fill="#ffe9c2"/></g>
+      ${Array.from({ length: 12 }, (_, i) => `<path d="M800 600 L${800 + Math.cos(i / 12 * Math.PI * 2) * 1200} ${600 + Math.sin(i / 12 * Math.PI * 2) * 1200} L${800 + Math.cos((i + .3) / 12 * Math.PI * 2) * 1200} ${600 + Math.sin((i + .3) / 12 * Math.PI * 2) * 1200}Z" fill="#fff4dc" opacity=".06"/>`).join('')}
+      <path d="M0 640 Q300 560 620 620 T1240 600 T1600 630 V1000 H0Z" fill="#5a4a5c"/><path d="M0 740 Q400 680 820 730 T1600 720 V1000 H0Z" fill="#3a3044"/><path d="M0 860 Q500 820 1000 860 T1600 850 V1000 H0Z" fill="#251f2e"/>` },
+
+    smoke: { p: 'ember', svg: () => `<defs>${sky('a', ['#2a1514', '#7a2e22', '#c45a34'])}<filter id="b"><feGaussianBlur stdDeviation="24"/></filter></defs>
+      <rect width="1600" height="1000" fill="url(#a)"/>
+      <g filter="url(#b)" fill="#2a2522" opacity=".75">${[[300, 520], [760, 480], [1180, 540]].map(([x, y], i) => `<g class="drift" style="animation-delay:${i * 1.5}s"><ellipse cx="${x}" cy="${y}" rx="120" ry="90"/><ellipse cx="${x + 40}" cy="${y - 140}" rx="150" ry="110"/><ellipse cx="${x + 90}" cy="${y - 300}" rx="190" ry="120"/></g>`).join('')}</g>
+      ${Array.from({ length: 16 }, (_, i) => { const h = 160 + ((i * 71) % 260); return `<rect x="${i * 100}" y="${760 - h}" width="96" height="${h + 240}" fill="#160d0c"/>` + windows(i * 100, 770 - h, 96, h - 20, 3, Math.max(3, h / 40 | 0), i + 40, '#ff8a4a', '#160d0c'); }).join('')}
+      <rect y="760" width="1600" height="240" fill="#0d0807"/>` }
+  };
+
+  /* ───────── 입자 ───────── */
+  const cvs = $('particles'), ctx = cvs.getContext('2d');
+  let ptype = 'none', parts = [];
+  function sizeCanvas() { const r = stage.getBoundingClientRect(); cvs.width = r.width * devicePixelRatio; cvs.height = r.height * devicePixelRatio; }
+  function setParticles(t) {
+    ptype = reduced ? 'none' : t; parts = [];
+    const n = { snow: 90, dust: 40, ember: 60 }[ptype] || 0;
+    for (let i = 0; i < n; i++) parts.push({ x: Math.random(), y: Math.random(), s: Math.random() * .8 + .4, o: Math.random() * Math.PI * 2 });
+  }
+  function tick() {
+    const w = cvs.width, h = cvs.height; ctx.clearRect(0, 0, w, h);
+    for (const p of parts) {
+      if (ptype === 'snow') { p.y += .0012 * p.s; p.x += Math.sin(p.o += .01) * .0004; ctx.fillStyle = 'rgba(255,255,255,.75)'; }
+      if (ptype === 'dust') { p.y -= .00012 * p.s; p.x += Math.sin(p.o += .006) * .0003; ctx.fillStyle = 'rgba(255,236,190,.35)'; }
+      if (ptype === 'ember') { p.y -= .0016 * p.s; p.x += Math.sin(p.o += .03) * .0008; ctx.fillStyle = 'rgba(255,150,80,.8)'; }
+      if (p.y > 1.02) p.y = -.02; if (p.y < -.02) p.y = 1.02; if (p.x > 1) p.x = 0; if (p.x < 0) p.x = 1;
+      ctx.beginPath(); ctx.arc(p.x * w, p.y * h, p.s * 2.2 * devicePixelRatio, 0, 7); ctx.fill();
+    }
+    requestAnimationFrame(tick);
+  }
+
+  /* ───────── 소리 ───────── */
+  let actx = null;
+  function blip() {
+    if (!opt.sound) return;
+    try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); const o = actx.createOscillator(), g = actx.createGain();
+      o.type = 'square'; o.frequency.value = 520 + Math.random() * 120; g.gain.value = .025; o.connect(g); g.connect(actx.destination);
+      o.start(); o.stop(actx.currentTime + .03); } catch (e) {}
+  }
+
+  /* ───────── 상태 ───────── */
+  const opt = { auto: false, fast: false, sound: false };
+  let st = { screen: 'title', role: null, node: null, li: 0, stats: {}, log: [], last: {}, ending: null };
+  let queue = [], typing = null, full = '', shown = 0, waitTimer = null, curBg = null, curCast = [];
+  const role = () => S.roles.find(r => r.id === st.role);
+
+  function setBg(key) {
+    if (key === curBg) return; curBg = key;
+    const b = BG[key] || BG.sitroom;
+    bgEl.classList.add('fading');
+    setTimeout(() => { bgEl.innerHTML = `<svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">${b.svg()}</svg>`; bgEl.classList.remove('fading'); setParticles(b.p); }, curBg && bgEl.innerHTML ? 350 : 0);
+  }
+  function castOf(id) { const r = role(); return r && r.cast && r.cast[id]; }
+  function setCast(ids) {
+    curCast = (ids || []).filter(id => { const c = castOf(id); return c && !c.voice; }).slice(0, 2);
+    [slotL, slotR].forEach((el, i) => {
+      const id = curCast[i];
+      if (!id) { el.classList.add('out'); el.dataset.id = ''; return; }
+      if (el.dataset.id !== id) { el.innerHTML = portrait(castOf(id).look, 'neutral'); el.dataset.id = id; el.dataset.mood = 'neutral'; }
+      requestAnimationFrame(() => el.classList.remove('out'));
+    });
+  }
+  function focusSpeaker(who, mood, talking) {
+    [slotL, slotR].forEach(el => {
+      const id = el.dataset.id; if (!id) return;
+      const on = id === who;
+      el.classList.toggle('dim', !!who && !on && who !== '');
+      el.classList.toggle('speak', on);
+      el.classList.toggle('talking', on && talking);
+      if (on && (mood || 'neutral') !== el.dataset.mood) { el.innerHTML = portrait(castOf(id).look, mood); el.dataset.mood = mood || 'neutral'; }
+    });
+  }
+  function fx(kind) {
+    if (!kind || reduced) return;
+    if (kind === 'shake') { stage.classList.remove('shake'); void stage.offsetWidth; stage.classList.add('shake'); }
+    else { const f = $('fx'); f.className = 'fx'; void f.offsetWidth; f.className = 'fx ' + kind; }
+  }
+  function showCard(t, p, done) {
+    const c = $('card'); $('cardT').textContent = t; $('cardP').textContent = p; c.classList.add('on');
+    let ended = false; const end = () => { if (ended) return; ended = true; c.classList.remove('on'); stage.onclick = advance; setTimeout(done, 300); };
+    stage.onclick = end; setTimeout(end, reduced ? 900 : 1900);
+  }
+
+  /* ───────── HUD ───────── */
+  function hud() {
+    const r = role(); if (!r) return '';
+    return `<div class="hud">${Object.entries(r.stats).map(([k, name]) => {
+      const v = st.stats[k], d = st.last[k] || 0;
+      return `<div class="g"><div class="lab"><span>${esc(name)}</span><em>${v}${d ? `<b class="${d > 0 ? 'up' : 'down'}">${d > 0 ? '+' : ''}${d}</b>` : ''}</em></div><div class="bar ${v <= 20 ? 'low' : ''}"><i style="width:${v}%"></i></div></div>`;
+    }).join('')}</div>`;
+  }
+
+  /* ───────── 대사 진행 ───────── */
+  function playLines(lines, onDone) { queue = lines.slice(); st.li = 0; queue.onDone = onDone; nextLine(); }
+  function nextLine() {
+    clearTimeout(waitTimer);
+    if (st.li >= queue.length) { focusSpeaker(null); const d = queue.onDone; queue.onDone = null; d && d(); return; }
+    const L = queue[st.li], r = role();
+    const isNarr = !L.who, isMe = L.who === 'me', c = !isNarr && !isMe ? castOf(L.who) : null;
+    const name = isNarr ? '해설' : isMe ? (r ? r.me : '나') : (c ? c.name : L.who);
+    const color = c && c.look ? shade(c.look.color, -0.1) : isMe ? 'var(--signal)' : '#55606b';
+    panel.innerHTML = `${hud()}<div class="dlg" id="dlg"><span class="name ${isNarr ? 'narr' : ''}" style="--who:${color}">${esc(name)}</span><div class="text ${isNarr ? 'narr' : ''} ${c && c.voice ? 'voice' : ''}" id="txt"></div></div><span class="next" id="nx" hidden>▼</span>`;
+    $('dlg').onclick = advance;
+    fx(L.fx);
+    focusSpeaker(isNarr ? '' : L.who, L.mood, true);
+    full = L.text; shown = 0;
+    const speed = opt.fast ? 10 : 34;
+    clearInterval(typing);
+    typing = setInterval(() => {
+      shown++; $('txt').textContent = full.slice(0, shown); if (shown % 2 === 0 && full[shown - 1] !== ' ') blip();
+      if (shown >= full.length) finishTyping();
+    }, reduced ? 1 : speed);
+  }
+  function finishTyping() {
+    clearInterval(typing); typing = null;
+    const t = $('txt'); if (t) t.textContent = full;
+    const L = queue[st.li]; focusSpeaker(L && L.who ? L.who : '', L && L.mood, false);
+    const nx = $('nx'); if (nx) nx.hidden = false;
+    if (opt.auto) waitTimer = setTimeout(advance, 1100 + full.length * 35);
+  }
+  function advance() {
+    if (st.screen !== 'play' && st.screen !== 'title' && st.screen !== 'ending') return;
+    if (typing) { finishTyping(); return; }
+    if (!queue.length || st.li >= queue.length) return;
+    st.li++; nextLine();
+  }
+
+  /* ───────── 화면 흐름 ───────── */
+  function title() {
+    st = { screen: 'title', role: null, node: null, li: 0, stats: {}, log: [], last: {}, ending: null };
+    $('meta').textContent = 'PROLOGUE'; $('titlebig').style.opacity = 1;
+    setBg('dmz'); setCast([]);
+    playLines(S.prologue.map(t => ({ who: '', text: t })), roleSelect);
+  }
+  function roleSelect() {
+    st.screen = 'roles'; $('meta').textContent = 'SELECT ROLE';
+    panel.innerHTML = `<div class="ask">역할을 고르세요</div><div class="roles">${S.roles.map(r => {
+      const first = Object.values(r.cast || {}).find(c => !c.voice);
+      return `<button class="role" data-role="${r.id}"><span class="pic">${first ? portrait(first.look, 'neutral') : ''}</span><span class="org">${esc(r.title)}</span><span class="nm">${esc(r.name)}</span><span class="diff">${'■'.repeat(r.difficulty)}${'□'.repeat(5 - r.difficulty)}</span></button>`;
+    }).join('')}</div>`;
+    panel.querySelectorAll('[data-role]').forEach(b => b.onclick = () => startRole(b.dataset.role));
+  }
+  function startRole(id) {
+    const r = S.roles.find(x => x.id === id);
+    st = { screen: 'play', role: id, node: r.start, li: 0, stats: {}, log: [], last: {}, ending: null };
+    Object.keys(r.stats).forEach(k => st.stats[k] = 50);
+    $('titlebig').style.opacity = 0;
+    panel.innerHTML = hud() + `<div class="dlg"><span class="name narr">브리핑</span><div class="text narr">${esc(r.brief)}</div></div>`;
+    enterNode();
+  }
+  function enterNode() {
+    const r = role(), n = r.nodes[st.node]; st.screen = 'play';
+    $('meta').textContent = `${r.name} · ${n.time}`;
+    setBg(n.bg); setCast([]);
+    showCard(n.time, n.place || '', () => { setCast(n.cast); setTimeout(() => playLines(n.lines, showChoices), 250); });
+  }
+  function showChoices() {
+    const r = role(), n = r.nodes[st.node]; st.screen = 'choice';
+    panel.innerHTML = `${hud()}<div class="choices"><div class="ask">결정하십시오</div>${n.choices.map((c, i) => `<button class="choice" data-i="${i}"><span class="k">${'ABCD'[i]}</span><span class="l">${esc(c.label)}</span><span class="d">${esc(c.detail || '')}</span></button>`).join('')}</div>`;
+    panel.querySelectorAll('[data-i]').forEach(b => b.onclick = () => choose(+b.dataset.i));
+    const first = panel.querySelector('.choice'); first && first.focus({ preventScroll: true });
+  }
+  function choose(i) {
+    const r = role(), n = r.nodes[st.node], c = n.choices[i];
+    st.last = {};
+    Object.entries(c.effects || {}).forEach(([k, d]) => { if (k in st.stats) { st.stats[k] = Math.max(0, Math.min(100, st.stats[k] + d)); st.last[k] = d; } });
+    st.log.push({ time: n.time.split('·')[0].trim(), label: c.label });
+    let next = c.next;
+    if (Object.values(st.stats).some(v => v <= 0)) next = 'collapse';
+    if (r.endings[next]) { st.node = next; return enterEnding(); }
+    if (r.nodes[next]) { st.node = next; panel.innerHTML = hud() + `<div class="dlg"><span class="name narr">선택</span><div class="text narr">${esc(c.label)}</div></div>`; return setTimeout(enterNode, 900); }
+    console.warn('없는 장면 id:', next); st.node = 'collapse'; enterEnding();
+  }
+  function enterEnding() {
+    const r = role(), e = r.endings[st.node]; st.screen = 'ending';
+    $('meta').textContent = `${r.name} · ENDING`;
+    panel.innerHTML = hud() + `<div class="dlg"><span class="name narr">선택</span><div class="text narr">${esc(st.log[st.log.length - 1].label)}</div></div>`;
+    setTimeout(() => {
+      setBg(e.bg || 'dawn'); setCast([]);
+      showCard('ENDING', e.title, () => playLines(e.text.split('\n').map(t => ({ who: '', text: t })), endCard));
+    }, 900);
+  }
+  function endCard() {
+    const r = role(), e = r.endings[st.node]; st.screen = 'end'; st.last = {};
+    panel.innerHTML = `${hud()}<div class="endcard"><div class="tone ${e.tone}">${{ good: '■ 안정된 결말', mixed: '■ 불완전한 결말', bad: '■ 실패한 결말' }[e.tone]}</div><h2>${esc(e.title)}</h2>
+      <div class="log">${st.log.map(l => `<div><span>${esc(l.time)}</span><span>${esc(l.label)}</span></div>`).join('')}</div>
+      <div class="actions"><button class="btn" id="again">같은 역할로 다시</button><button class="btn ghost" id="other">다른 역할</button></div></div>`;
+    $('again').onclick = () => startRole(st.role);
+    $('other').onclick = () => { $('titlebig').style.opacity = 1; setBg('dmz'); setCast([]); roleSelect(); };
+  }
+
+  /* ───────── 조작 ───────── */
+  stage.onclick = advance;
+  document.addEventListener('keydown', e => {
+    if ((e.key === ' ' || e.key === 'Enter') && !(e.target instanceof HTMLButtonElement)) { e.preventDefault(); advance(); }
+    if (st.screen === 'choice' && /^[1-4]$/.test(e.key)) { const b = panel.querySelectorAll('.choice')[+e.key - 1]; b && b.click(); }
+  });
+  const tog = (id, k) => { const b = $(id); b.onclick = () => { opt[k] = !opt[k]; b.setAttribute('aria-pressed', opt[k]); if (k === 'auto' && opt.auto && !typing) waitTimer = setTimeout(advance, 600); if (k === 'auto' && !opt.auto) clearTimeout(waitTimer); }; };
+  tog('bAuto', 'auto'); tog('bFast', 'fast'); tog('bSound', 'sound');
+  $('bHome').onclick = () => { clearInterval(typing); typing = null; clearTimeout(waitTimer); title(); };
+
+  window.addEventListener('resize', sizeCanvas);
+  sizeCanvas(); requestAnimationFrame(tick);
+
+  window.claude?.hot?.snapshot?.(() => ({ role: st.role, node: st.node, stats: st.stats, log: st.log, screen: st.screen }));
+  const boot = d => {
+    if (d && d.role && S.roles.find(r => r.id === d.role) && (d.screen === 'play' || d.screen === 'choice')) {
+      const r = S.roles.find(x => x.id === d.role);
+      if (r.nodes[d.node]) { st = { screen: 'play', role: d.role, node: d.node, li: 0, stats: d.stats, log: d.log || [], last: {}, ending: null }; $('titlebig').style.opacity = 0; enterNode(); return; }
+    }
+    title();
+  };
+  window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
+})();
+</script>
+
+</body></html>
