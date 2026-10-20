@@ -1,5 +1,5 @@
 export const SAVE_KEY = 'unmu-1147-save-v1';
-export const freshState = () => ({version:1, started:false, completed:false, scene:'platform', solved:[], hints:{}, attempts:{}, visited:[], notes:[], watched:[], seconds:0, sound:false, volume:0.28, reducedMotion:false});
+export const freshState = () => ({version:2, started:false, completed:false, scene:'platform', solved:[], hints:{}, attempts:{}, scores:{}, tokens:1, collectedTokens:[], visited:[], notes:[], watched:[], seconds:0, sound:false, volume:0.28, reducedMotion:false});
 
 export const puzzles = [
   {id:1, scene:'platform', title:'다섯 장의 승차권', category:'수와 논리', stars:1, type:'number', prompt:'어른 표는 1,800원, 어린이 표는 900원. 다섯 명이 한 장씩 표를 사서 모두 7,200원을 냈습니다. 어른 표는 몇 장일까요?', unit:'장', min:0, max:5, answer:3, hints:['다섯 명 모두 어린이라면 얼마일까요?', '900 × 5 = 4,500원. 실제 금액과 2,700원 차이가 납니다.', '어른 한 명마다 900원이 더 필요합니다. 2,700 ÷ 900을 해보세요.'], explanation:'다섯 장을 모두 어린이 표로 계산하면 4,500원입니다. 차액 2,700원을 어른 표의 추가 금액 900원으로 나누면 3명. 어른 3장, 어린이 2장이 맞습니다.', reward:'낡은 승차권', note:'1974년 10월 27일 · 은하 7호. 운무행 마지막 승차권이다. 출발 시각은 11:12로 찍혀 있다.', after:['오복','이 표, 할아버지가 매일 들여다보던 거예요. 뒷면에 뭔가 적혀 있어요. “떠난 시간보다, 도착할 시간을 기억해.”']},
@@ -40,4 +40,61 @@ export function bridgeMove(state,selected){if(selected.length<1||selected.length
 export function toggleLights(lights,index){if(index<0||index>8)return lights.slice();const row=Math.floor(index/3),col=index%3;return lights.map((v,i)=>Math.abs(Math.floor(i/3)-row)+Math.abs(i%3-col)<=1?!v:v);}
 export const LIGHTS_INITIAL=[0,4,8].reduce((v,i)=>toggleLights(v,i),Array(9).fill(true));
 export function validateAnswer(id,value){if(id===4)return checkPipes(value);if(id===5)return Array.isArray(value)&&value[0]===4;if(id===6)return routeDistance(value)===7;if(id===7)return value===7;if(id===8)return !!value&&value.sides?.every(x=>x===1)&&value.elapsed<=17;if(id===9)return Array.isArray(value)&&value.length===9&&value.every(v=>v===true);const answer=puzzles.find(p=>p.id===id)?.answer;if(Array.isArray(answer))return JSON.stringify(value)===JSON.stringify(answer);return value===answer;}
-export function normalizeSave(raw){const base=freshState();if(!raw||raw.version!==1||typeof raw!=='object')return base;const solved=[...new Set(Array.isArray(raw.solved)?raw.solved.filter(x=>Number.isInteger(x)&&x>=1&&x<=10):[])];const available=unlockedScenes(solved);return {...base,started:raw.started===true,completed:raw.completed===true&&solved.length===10,scene:available.includes(raw.scene)?raw.scene:'platform',solved,hints:Object.fromEntries(Object.entries(raw.hints??{}).filter(([k,v])=>+k>=1&&+k<=10&&Number.isInteger(v)&&v>=0&&v<=3)),attempts:typeof raw.attempts==='object'&&raw.attempts?raw.attempts:{},visited:Array.isArray(raw.visited)?raw.visited.filter(s=>typeof s==='string'):[],notes:puzzles.filter(p=>solved.includes(p.id)).map(p=>p.id),watched:Array.isArray(raw.watched)?raw.watched.filter(s=>/^c[1-7]$/.test(s)):[],seconds:Number.isFinite(raw.seconds)?Math.max(0,raw.seconds):0,sound:raw.sound===true,volume:Number.isFinite(raw.volume)?Math.min(.7,Math.max(0,raw.volume)):.28,reducedMotion:raw.reducedMotion===true};}
+// Stable IDs keep collected coins claimed across revisits, reloads and the spring scene.
+export const HIDDEN_TOKENS = {
+ platform:[{id:'platform-1',x:30,y:83},{id:'platform-2',x:91,y:40}],
+ office:[{id:'office-1',x:13,y:40},{id:'office-2',x:60,y:80}],
+ village:[{id:'village-1',x:9,y:77},{id:'village-2',x:89,y:30}],
+ path:[{id:'path-1',x:10,y:43},{id:'path-2',x:88,y:80}],
+ tunnel:[{id:'tunnel-1',x:13,y:36},{id:'tunnel-2',x:65,y:80}],
+ cavern:[{id:'cavern-1',x:36,y:83},{id:'cavern-2',x:89,y:32}]
+};
+export const NO_TOKENS_MESSAGE = '토큰이 없어요. 장면 곳곳을 눌러 찾아보세요.';
+export function baseScore(id){return Number.isInteger(id)&&id>=1&&id<=10?(id<=3?30:id<=7?40:id<=9?50:60):0;}
+export function availableScore(state,id){return baseScore(id)*(10-Math.min(6,state.attempts[id]||0))/10;}
+export function totalScore(state){return state.solved.reduce((sum,id)=>sum+(state.scores[id]||0),0);}
+export function recordWrongAnswer(state,id){
+ if(!baseScore(id)||state.solved.includes(id))return 0;
+ const before=availableScore(state,id);
+ state.attempts[id]=Math.min(Number.MAX_SAFE_INTEGER,(state.attempts[id]||0)+1);
+ return before-availableScore(state,id);
+}
+export function awardPuzzle(state,id){
+ if(!baseScore(id)||state.solved.includes(id))return 0;
+ const points=availableScore(state,id);
+ state.scores[id]=points;
+ state.solved.push(id);state.solved.sort((a,b)=>a-b);
+ if(!state.notes.includes(id)){state.notes.push(id);state.notes.sort((a,b)=>a-b);}
+ return points;
+}
+export function collectToken(state,id){
+ if(!state.started||!unlockedScenes(state.solved).includes(state.scene)||state.collectedTokens.includes(id)||!HIDDEN_TOKENS[state.scene]?.some(t=>t.id===id))return false;
+ state.collectedTokens.push(id);state.tokens++;
+ return true;
+}
+export function unlockNextHint(state,id){
+ const p=puzzles.find(p=>p.id===id);
+ if(!p||!unlockedScenes(state.solved).includes(p.scene))return 'locked';
+ const count=state.hints[id]||0;
+ if(count>=p.hints.length)return 'complete';
+ if(state.tokens<1)return 'empty';
+ state.tokens--;state.hints[id]=count+1;
+ return 'unlocked';
+}
+export function normalizeSave(raw){
+ const base=freshState();
+ if(!raw||typeof raw!=='object'||![1,2].includes(raw.version))return base;
+ const validId=k=>/^(?:[1-9]|10)$/.test(k);
+ const counts=(value,max)=>Object.fromEntries(Object.entries(value&&typeof value==='object'?value:{}).filter(([k,v])=>validId(k)&&Number.isSafeInteger(v)&&v>=0&&v<=max));
+ const solved=[...new Set(Array.isArray(raw.solved)?raw.solved.filter(x=>Number.isInteger(x)&&x>=1&&x<=10):[])];
+ const available=unlockedScenes(solved),hints=counts(raw.hints,3),attempts=counts(raw.attempts,Number.MAX_SAFE_INTEGER);
+ const knownTokens=new Set(Object.values(HIDDEN_TOKENS).flat().map(t=>t.id));
+ const collectedTokens=raw.version===2&&Array.isArray(raw.collectedTokens)?[...new Set(raw.collectedTokens.filter(id=>knownTokens.has(id)))]:[];
+ const scores=Object.fromEntries(solved.map(id=>{
+  const score=raw.version===2?raw.scores?.[id]:undefined,base=baseScore(id);
+  return [id,Number.isInteger(score)&&score>=base*.4&&score<=base&&score%(base/10)===0?score:availableScore({attempts},id)];
+ }));
+ // Existing clues and hints remain open; the new token system starts with one coin.
+ const tokens=raw.version===2&&Number.isSafeInteger(raw.tokens)?Math.min(1+collectedTokens.length,Math.max(0,raw.tokens)):1;
+ return {...base,started:raw.started===true,completed:raw.completed===true&&solved.length===10,scene:available.includes(raw.scene)?raw.scene:'platform',solved,hints,attempts,scores,tokens,collectedTokens,visited:Array.isArray(raw.visited)?raw.visited.filter(s=>typeof s==='string'):[],notes:puzzles.filter(p=>solved.includes(p.id)).map(p=>p.id),watched:Array.isArray(raw.watched)?raw.watched.filter(s=>/^c[1-7]$/.test(s)):[],seconds:Number.isFinite(raw.seconds)?Math.max(0,raw.seconds):0,sound:raw.sound===true,volume:Number.isFinite(raw.volume)?Math.min(.7,Math.max(0,raw.volume)):.28,reducedMotion:raw.reducedMotion===true};
+}
