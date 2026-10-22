@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#7770c8"><meta name="description" content="HSK 4급 중국어 성조를 매일 조금씩. 실력에 맞춘 퀴즈, 한국어 단어장, 오답 복습을 로그인 없이 시작하세요.">
+<title>TONE LAB — 매일 조금씩, 중국어 성조</title>
+<link rel="icon" href="./icon.svg" type="image/svg+xml"><link rel="stylesheet" href="./styles.css?v=1">
+</head><body>
+<a class="skip-link" href="#main">본문으로 이동</a>
+<aside class="sidebar" id="sidebar"><a class="brand" href="#home" aria-label="TONE LAB 홈"><span class="brand-symbol" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 21 12 9 19 21 27 8"/></svg></span><span>TONE<span class="brand-light">LAB</span><small>중국어 성조의 감각을 깨우다</small></span></a>
+<div class="nav-caption">MY STUDY SPACE</div><nav class="navigation" aria-label="주 메뉴">
+<a href="#home" data-nav="home"><span data-icon="home"></span>대시보드</a>
+<a href="#quiz" data-nav="quiz"><span data-icon="spark"></span>성조 퀴즈<span class="nav-pill">START</span></a>
+<a href="#words" data-nav="words"><span data-icon="book"></span>단어장</a>
+<a href="#review" data-nav="review"><span data-icon="repeat"></span>오답 노트<span id="review-badge" class="nav-count">0</span></a>
+<a href="#stats" data-nav="stats"><span data-icon="chart"></span>학습 기록</a>
+</nav><div class="nav-caption second">LEARN THE BASICS</div><nav class="navigation"><a href="#guide" data-nav="guide"><span data-icon="wave"></span>성조 가이드</a></nav>
+<div class="sidebar-note"><span class="note-dot"></span><strong>오늘도, 한 걸음씩.</strong><p>작은 반복이 모이면<br>중국어가 자연스러워져요.</p><span class="note-curve" aria-hidden="true">mā má mǎ mà</span></div>
+<div class="sidebar-footer"><span data-icon="shield"></span><span>로그인 없이 바로 학습<small>기록은 이 브라우저에 저장돼요</small></span></div></aside>
+<div class="workspace"><header class="topbar"><div><span class="top-crumb">나의 학습 공간</span><span class="crumb-slash">/</span><strong id="page-name">대시보드</strong></div><div class="top-actions"><span class="course-badge"><span class="status-dot"></span>HSK 4급</span><button class="icon-button" data-action="settings" aria-label="학습 설정"><span data-icon="settings"></span></button><span class="avatar" aria-label="나의 학습 공간">学</span></div></header>
+<main id="main" tabindex="-1"></main><footer class="page-footer"><span>TONE LAB <i>·</i> 한 음절씩, 더 자연스럽게.</span><button data-action="about">학습 데이터 및 안내<span data-icon="arrow-up-right"></span></button></footer></div>
+<nav class="mobile-nav" aria-label="모바일 메뉴"><a href="#home" data-mobile="home"><span data-icon="home"></span>홈</a><a href="#quiz" data-mobile="quiz"><span data-icon="spark"></span>퀴즈</a><a href="#words" data-mobile="words"><span data-icon="book"></span>단어장</a><a href="#review" data-mobile="review"><span data-icon="repeat"></span>오답</a><a href="#stats" data-mobile="stats"><span data-icon="chart"></span>기록</a></nav>
+<dialog id="modal"><div id="modal-content"></div></dialog><div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="./app.js?v=1"></script>
+</body></html>
